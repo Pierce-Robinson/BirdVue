@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <ImageView
+        android:contentDescription="@string/app_name"
+        android:id="@+id/logoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/icon"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/headingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logoImageView"
+        android:layout_centerHorizontal="true"
+        android:text="@string/create_account"
+        android:textColor="@color/text"
+        android:textStyle="bold"
+        android:textSize="32sp"
+        android:padding="10dp"
+        android:layout_marginTop="16dp"/>
+
+    <EditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headingTextView"
+        android:hint="@string/username"
+        android:textSize="24sp"
+        android:background="@drawable/rounded_edittext"
+        android:drawableStart="@drawable/outline_person_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:backgroundTint="@color/background_input"
+        android:layout_marginTop="16dp"
+        android:autofillHints="username"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameEditText"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        android:background="@drawable/rounded_edittext"
+        android:drawableStart="@drawable/outline_lock_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:backgroundTint="@color/background_input"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password" />
+
+    <EditText
+        android:id="@+id/confirmPasswordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordEditText"
+        android:hint="@string/confirm_password"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        android:background="@drawable/rounded_edittext"
+        android:drawableStart="@drawable/outline_lock_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:backgroundTint="@color/background_input"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password" />
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/confirmPasswordEditText"
+        android:text="@string/sign_up"
+        android:background="@drawable/rounded_button"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/background_button"/>
+
+    <TextView
+        android:id="@+id/goBackTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signupButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/go_back"
+        android:textSize="16sp"
+        android:textColor="@color/background_button"
+        android:layout_marginTop="16dp"/>
+</RelativeLayout>
