@@ -21,31 +21,31 @@
         android:layout_below="@id/logoImageView"
         android:layout_centerHorizontal="true"
         android:text="@string/create_account"
-        android:textColor="@color/md_theme_light_onSurface"
+        android:textColor="?attr/colorOnSecondaryContainer"
         android:textStyle="bold"
         android:textSize="32sp"
         android:padding="10dp"
         android:layout_marginTop="16dp"/>
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/headingTextView"
         android:hint="@string/username"
-        android:textColor="@color/md_theme_light_onSecondaryContainer"
-        android:textColorHint="@color/md_theme_light_secondary"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:textSize="24sp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/outline_person_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/md_theme_light_secondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="username"
         android:inputType="text" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,11 +57,13 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/md_theme_light_secondaryContainer"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/confirmPasswordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,11 +75,13 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/md_theme_light_secondaryContainer"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/signupButton"
         android:layout_width="wrap_content"
         android:layout_centerHorizontal="true"
@@ -87,8 +91,7 @@
         android:text="@string/sign_up"
         android:background="@drawable/rounded_button"
         android:layout_marginTop="50dp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/background_button"/>
+/>
 
     <TextView
         android:id="@+id/goBackTextView"
@@ -98,6 +101,5 @@
         android:layout_centerHorizontal="true"
         android:text="@string/go_back"
         android:textSize="16sp"
-        android:textColor="@color/background_button"
         android:layout_marginTop="16dp"/>
 </RelativeLayout>
