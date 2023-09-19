@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <!-- Dark Mode Setting -->
+
+        <ImageView
+            android:contentDescription="im an image"
+            android:id="@+id/iconDarkMode"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toTopOf="@id/darkModeCheckbox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/textDarkMode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dark Mode"
+            app:layout_constraintStart_toEndOf="@id/iconDarkMode"
+            app:layout_constraintTop_toTopOf="@id/iconDarkMode"
+            app:layout_constraintBottom_toBottomOf="@id/iconDarkMode"/>
+
+        <CheckBox
+            android:id="@+id/darkModeCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            app:layout_constraintStart_toEndOf="@id/textDarkMode"
+            app:layout_constraintTop_toTopOf="@id/textDarkMode"
+            app:layout_constraintBottom_toBottomOf="@id/textDarkMode"/>
+
+        <!-- Add more settings here following the same pattern -->
+
+        <!-- Navigation Bar -->
+        <LinearLayout
+            android:id="@+id/navigationBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/iconHome"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_background"
+                android:clickable="true"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:contentDescription="im an image"
+                android:id="@+id/iconNavMap"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_background"
+                android:clickable="true"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:contentDescription="im an image"
+                android:id="@+id/iconPlus"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_background"
+                android:clickable="true"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:contentDescription="im an image"
+                android:id="@+id/iconSquare"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_background"
+                android:clickable="true"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:contentDescription="im an image"
+                android:id="@+id/iconSettings"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_launcher_background"
+                android:clickable="true"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
