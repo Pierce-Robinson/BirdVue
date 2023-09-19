@@ -7,11 +7,11 @@
     <ImageView
         android:contentDescription="@string/app_name"
         android:id="@+id/logoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/icon"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="60dp"
         />
 
     <TextView
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/headingTextView"
         android:hint="@string/username"
+        android:textColor="@color/text"
         android:textSize="24sp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/outline_person_24"
@@ -77,7 +78,9 @@
 
     <Button
         android:id="@+id/signupButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingHorizontal="45dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/confirmPasswordEditText"
         android:text="@string/sign_up"
