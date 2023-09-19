@@ -31,7 +31,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/icon_home"
-            android:background="@color/black"
             app:shapeAppearanceOverlay="@style/ImageView.Corner"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -44,7 +43,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Don't worry... be "
-                android:textColor="@color/white"
                 android:maxWidth="150dp"
                 android:minWidth="150dp"
                 android:maxHeight="50dp"
@@ -59,7 +57,6 @@
                 android:maxHeight="70dp"
                 android:maxWidth="155dp"
                 android:text="don't worry... be happy"
-                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="italic"
                 android:layout_margin="5dp"/>
@@ -72,11 +69,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/icon_navigation_arrow"
             app:maxImageSize="40dp"
-            android:outlineSpotShadowColor="@color/white"
-            android:outlineAmbientShadowColor="@color/white"
-            app:borderWidth="0dp"
-            android:backgroundTint="@color/white"
-            app:tint="@color/background_button"/>
+            app:borderWidth="0dp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
