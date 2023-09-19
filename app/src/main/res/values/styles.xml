@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Rounded image view
+    https://stackoverflow.com/questions/66138001/imageview-with-only-bottom-or-top-corners-rounded/66138444#66138444
+    user answered
+    https://stackoverflow.com/users/9180439/ali
+    accessed 18 September 2023-->
+    <style name="ImageView.Corner" parent="">
+        <item name="cornerSizeTopRight">15dp</item>
+        <item name="cornerSizeTopLeft">15dp</item>
+        <item name="cornerSizeBottomLeft">15dp</item>
+        <item name="cornerSizeBottomRight">15dp</item>
+        <item name="cornerFamily">rounded</item>
+    </style>
 
 </resources>
