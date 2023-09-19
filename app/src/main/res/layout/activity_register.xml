@@ -21,7 +21,7 @@
         android:layout_below="@id/logoImageView"
         android:layout_centerHorizontal="true"
         android:text="@string/create_account"
-        android:textColor="@color/text"
+        android:textColor="@color/md_theme_light_onSurface"
         android:textStyle="bold"
         android:textSize="32sp"
         android:padding="10dp"
@@ -33,13 +33,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/headingTextView"
         android:hint="@string/username"
-        android:textColor="@color/text"
+        android:textColor="@color/md_theme_light_onSecondaryContainer"
+        android:textColorHint="@color/md_theme_light_secondary"
         android:textSize="24sp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/outline_person_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
+        android:backgroundTint="@color/md_theme_light_secondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="username"
         android:inputType="text" />
@@ -56,7 +57,7 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
+        android:backgroundTint="@color/md_theme_light_secondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
@@ -72,7 +73,7 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
+        android:backgroundTint="@color/md_theme_light_secondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
