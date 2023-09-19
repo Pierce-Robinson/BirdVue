@@ -14,40 +14,143 @@
         android:padding="16dp">
 
         <!-- Dark Mode Setting -->
-
         <ImageView
-            android:contentDescription="im an image"
             android:id="@+id/iconDarkMode"
+            android:contentDescription="im an image"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_launcher_background"
-            app:layout_constraintBottom_toTopOf="@id/darkModeCheckbox"
+            android:src="@drawable/icon_darkmode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textDarkMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="14dp"
             android:text="Dark Mode"
             app:layout_constraintStart_toEndOf="@id/iconDarkMode"
-            app:layout_constraintTop_toTopOf="@id/iconDarkMode"
-            app:layout_constraintBottom_toBottomOf="@id/iconDarkMode"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Notifications Setting -->
 
         <CheckBox
             android:id="@+id/darkModeCheckbox"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="212dp"
+            android:layout_marginTop="4dp"
+            android:checked="false"
+            android:padding="8dp"
+            app:layout_constraintStart_toEndOf="@id/textDarkMode"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iconNotificationsBell"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="48dp"
+            android:contentDescription="im an image"
+            android:src="@drawable/icon_darkmode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iconDarkMode" />
+
+        <TextView
+            android:id="@+id/textNotifications"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"
-            app:layout_constraintStart_toEndOf="@id/textDarkMode"
-            app:layout_constraintTop_toTopOf="@id/textDarkMode"
-            app:layout_constraintBottom_toBottomOf="@id/textDarkMode"/>
+            android:textSize="14dp"
+            android:text="Notifications"
+            app:layout_constraintStart_toEndOf="@id/iconNotificationsBell"
+            app:layout_constraintTop_toTopOf="@id/iconNotificationsBell" />
 
-        <!-- Add more settings here following the same pattern -->
+        <!-- Metric Units Setting -->
+
+        <CheckBox
+            android:id="@+id/notificationsCheckbox"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="204dp"
+            android:layout_marginTop="64dp"
+            android:checked="false"
+            android:padding="8dp"
+            app:layout_constraintStart_toEndOf="@id/textNotifications"
+            app:layout_constraintTop_toTopOf="@id/textNotifications" />
+
+        <!-- Max Distance Setting -->
+
+        <ImageView
+            android:id="@+id/iconMetricUnits"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="120dp"
+            android:contentDescription="im an image"
+            android:src="@drawable/icon_home"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iconNotificationsBell" />
+
+        <TextView
+            android:id="@+id/textMetricUnits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
+            android:text="Metric Units"
+            android:textSize="14dp"
+            app:layout_constraintStart_toEndOf="@id/iconMetricUnits"
+            app:layout_constraintTop_toTopOf="@id/iconMetricUnits" />
+
+        <CheckBox
+            android:id="@+id/metricUnitsCheckbox"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="208dp"
+            android:layout_marginTop="16dp"
+            android:checked="false"
+            android:padding="8dp"
+            app:layout_constraintStart_toEndOf="@id/textMetricUnits"
+            app:layout_constraintTop_toTopOf="@id/textMetricUnits" />
 
         <!-- Navigation Bar -->
+
+        <ImageView
+            android:id="@+id/iconMaxDistance"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="168dp"
+            android:contentDescription="im an image"
+            android:src="@drawable/icon_camera"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iconMetricUnits" />
+
+        <TextView
+            android:id="@+id/textMaxDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="64dp"
+            android:text="Max Distance"
+            android:textSize="14dp"
+            app:layout_constraintStart_toEndOf="@id/iconMaxDistance"
+            app:layout_constraintTop_toTopOf="@id/iconMaxDistance" />
+
+        <EditText
+            android:id="@+id/maxDistanceEditText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="144dp"
+            android:hint="Enter max distance"
+            android:inputType="number"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toEndOf="@id/textMaxDistance"
+            app:layout_constraintTop_toTopOf="@id/textMaxDistance" />
+
         <LinearLayout
             android:id="@+id/navigationBar"
             android:layout_width="match_parent"
@@ -57,49 +160,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageView
-                android:id="@+id/iconHome"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_launcher_background"
-                android:clickable="true"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:contentDescription="im an image"
-                android:id="@+id/iconNavMap"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_launcher_background"
-                android:clickable="true"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:contentDescription="im an image"
-                android:id="@+id/iconPlus"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_launcher_background"
-                android:clickable="true"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:contentDescription="im an image"
-                android:id="@+id/iconSquare"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_launcher_background"
-                android:clickable="true"
-                android:layout_weight="1"/>
-
-            <ImageView
-                android:contentDescription="im an image"
-                android:id="@+id/iconSettings"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_launcher_background"
-                android:clickable="true"
-                android:layout_weight="1"/>
+            <!-- Icons in the navigation bar -->
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
