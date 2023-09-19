@@ -7,4 +7,11 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="sign_up">Sign Up</string>
     <string name="go_back">Go Back</string>
+    <!--    login page-->
+    <string name="login_heading">Login to your Account</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="or">or</string>
+    <string name="no_account">Don\'t have an account?</string>
 </resources>
