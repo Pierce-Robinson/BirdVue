@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,129 +8,136 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.003">
 
         <!-- Dark Mode Setting -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iconDarkMode"
-                android:contentDescription="im an image"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="im an image"
                 android:src="@drawable/icon_darkmode" />
 
             <TextView
                 android:id="@+id/textDarkMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:text="Dark Mode"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Dark Mode"
+                android:textSize="14dp" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/darkModeCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:layout_gravity="right"
                 android:checked="false"
-                android:padding="2dp"
-                android:layout_gravity="right" /> <!-- Align to the right -->
+                android:padding="2dp" /> <!-- Align to the right -->
         </LinearLayout>
 
         <!-- Notifications Setting -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iconNotificationsBell"
-                android:contentDescription="im an image"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="im an image"
                 android:src="@drawable/icon_notifications" />
 
             <TextView
                 android:id="@+id/textNotifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:text="Notifications"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Notifications"
+                android:textSize="14dp" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/notificationsCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
+                android:layout_gravity="right"
                 android:checked="false"
-                android:padding="8dp"
-                android:layout_gravity="right" /> <!-- Align to the right -->
+                android:padding="8dp" /> <!-- Align to the right -->
         </LinearLayout>
 
         <!-- Metric Units Setting -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iconMetricUnits"
-                android:contentDescription="im an image"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="im an image"
                 android:src="@drawable/icon_metricunits" />
 
             <TextView
                 android:id="@+id/textMetricUnits"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:text="Metric Units"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Metric Units"
+                android:textSize="14dp" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/metricUnitsCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:checked="false"
-                android:padding="8dp"
-                android:layout_gravity="right" /> <!-- Align to the right -->
+                android:layout_gravity="right"
+                android:checked="true"
+                android:padding="8dp" /> <!-- Align to the right -->
         </LinearLayout>
 
         <!-- Max Distance Setting -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/iconMaxDistance"
-                android:contentDescription="im an image"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:contentDescription="im an image"
                 android:src="@drawable/icon_map" />
 
             <TextView
                 android:id="@+id/textMaxDistance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14dp"
-                android:text="Max Distance"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:text="Max Distance"
+                android:textSize="14dp" />
 
             <EditText
                 android:id="@+id/maxDistanceEditText"
@@ -142,8 +148,41 @@
                 android:inputType="number"
                 android:padding="8dp" />
         </LinearLayout>
-
-        <!-- Add more settings here following the same pattern -->
-
     </LinearLayout>
-</ScrollView>
+
+    <!-- logout Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logoutButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="20dp"
+        android:backgroundTint="#e2e2e2"
+        android:onClick="onLogOutClick"
+        android:text="Log Out"
+        android:textColor="@color/black"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.628"
+        app:strokeWidth="0dp" />
+
+    <!-- Delete Account Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="20dp"
+        android:backgroundTint="#4D6658"
+        android:onClick="onDeleteAccountClick"
+        android:text="Delete Account"
+        android:textColor="@color/white"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.823"
+        app:strokeWidth="0dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
