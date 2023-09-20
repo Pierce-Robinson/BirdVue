@@ -7,15 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <androidx.core.widget.NestedScrollView
+<!--    <fragment-->
+<!--        android:id="@+id/nav_host_fragment"-->
+<!--        android:name="androidx.navigation.fragment.NavHostFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_above="@id/bottomNavView"-->
+<!--        app:defaultNavHost="true"-->
+<!--        app:navGraph="@navigation/bottom_nav_graph"/>-->
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="100dp"
-        android:clipToPadding="false">
-
-        <!-- Scrollable content -->
-
-    </androidx.core.widget.NestedScrollView>
+        android:id="@+id/frame_container" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
@@ -24,15 +28,16 @@
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconSize="35dp"
-        app:itemIconTint="@color/md_theme_light_primary"
-        app:itemTextColor="@color/md_theme_light_primary"
+        app:itemIconTint="?attr/colorSecondary"
+        app:itemTextColor="?attr/colorSecondary"
         app:hideOnScroll="true"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:tint="@color/md_theme_light_onPrimary"
+        android:backgroundTint="?attr/colorSecondary"
+        app:tint="?attr/colorOnSecondary"
         android:src="@drawable/icon_add"
         app:layout_anchor="@id/bottomNavView"
         app:layout_anchorGravity="center"/>

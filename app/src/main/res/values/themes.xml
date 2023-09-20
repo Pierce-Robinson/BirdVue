@@ -1,5 +1,5 @@
 <resources>
-    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.BirdVue" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -29,4 +29,6 @@
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/md_theme_light_primary</item>
     </style>
+
+    <style name="Theme.BirdVue" parent="Base.Theme.BirdVue" />
 </resources>
