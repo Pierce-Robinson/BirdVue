@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.SettingsFragment">
+    tools:context=".ui.SettingsFragment"
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -41,7 +41,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Dark Mode"
-                android:textSize="14dp" />
+                android:textSize="18dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/darkModeCheckbox"
@@ -73,7 +73,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Notifications"
-                android:textSize="14dp" />
+                android:textSize="18dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/notificationsCheckbox"
@@ -105,7 +105,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Metric Units"
-                android:textSize="14dp" />
+                android:textSize="18dp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/metricUnitsCheckbox"
@@ -137,7 +137,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Max Distance"
-                android:textSize="14dp" />
+                android:textSize="18dp" />
 
             <EditText
                 android:id="@+id/maxDistanceEditText"
@@ -155,7 +155,6 @@
         android:id="@+id/logoutButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginHorizontal="20dp"
         android:backgroundTint="?attr/colorSecondary"
         android:onClick="onLogOutClick"
         android:text="Log Out"
@@ -172,7 +171,6 @@
         android:id="@+id/deleteAccountButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginHorizontal="20dp"
         android:onClick="onDeleteAccountClick"
         android:text="Delete Account"
         app:cornerRadius="20dp"

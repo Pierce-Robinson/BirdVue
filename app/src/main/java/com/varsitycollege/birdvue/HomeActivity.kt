@@ -24,33 +24,33 @@ class HomeActivity : AppCompatActivity() {
         //Default fragment
         replaceFragment(HotspotFragment())
 
-//        bottomNavigationView = binding.bottomNavView
-//        bottomNavigationView.setOnItemSelectedListener { menuItem ->
-//            when(menuItem.itemId) {
-//                R.id.navigation_community -> {
-//                    replaceFragment(CommunityFragment())
-//                    true
-//                }
-//                R.id.navigation_hotspot -> {
-//                    replaceFragment(HotspotFragment())
-//                    true
-//                }
-//                R.id.navigation_observations -> {
-//                    replaceFragment(ObservationsFragment())
-//                    true
-//                }
-//                R.id.navigation_settings -> {
-//                    replaceFragment(SettingsFragment())
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
+        bottomNavigationView = binding.bottomNavView
+        bottomNavigationView.setOnItemSelectedListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.bottom_community -> {
+                    replaceFragment(CommunityFragment())
+                    true
+                }
+                R.id.bottom_map -> {
+                    replaceFragment(HotspotFragment())
+                    true
+                }
+                R.id.bottom_observations -> {
+                    replaceFragment(ObservationsFragment())
+                    true
+                }
+                R.id.bottom_settings -> {
+                    replaceFragment(SettingsFragment())
+                    true
+                }
+                else -> false
+            }
+        }
 
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(binding.frameContainer.id, fragment).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit()
     }
 
 }
