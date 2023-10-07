@@ -9,6 +9,10 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+
+var mapView: MapView? = null
 
 class AddSightingMapActivity : AppCompatActivity() {
     private val galleryPermission = 101
@@ -18,6 +22,9 @@ class AddSightingMapActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddSightingMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.mapView.getMapboxMap()?.loadStyleUri(Style.OUTDOORS)
+
         binding.openGalleryButton.setOnClickListener {
             if (isGalleryPermissionSuccess()) {
                 openGallery()
@@ -44,6 +51,25 @@ class AddSightingMapActivity : AppCompatActivity() {
                 Toast.makeText(this, "Gallery permission is required to open this galery", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
     }
     private fun openGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK)
