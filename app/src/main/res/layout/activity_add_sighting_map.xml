@@ -10,12 +10,13 @@
     tools:context=".ui.HotspotFragment">
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="map goes here for PIERCE"
-        android:layout_weight="0.3"/>
-
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="384dp"
+        android:layout_height="239dp"
+        app:mapbox_cameraTargetLat="40.7128"
+        app:mapbox_cameraTargetLng="-74.0060"
+        app:mapbox_cameraZoom="9.0" />
     <com.google.android.material.button.MaterialButton
         android:id="@+id/openGalleryButton"
         android:layout_width="match_parent"
