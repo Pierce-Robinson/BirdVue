@@ -1,10 +1,8 @@
 package com.varsitycollege.birdvue
 
-import AddSightingMapActivity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -67,7 +65,7 @@ class HomeActivity : AppCompatActivity() {
 
         //Floating action button
         binding.fabAdd.setOnClickListener {
-            val intent = Intent(this,AddSightingMapActivity::class.java)
+            val intent = Intent(this, AddSightingMapActivity::class.java)
             startActivity(intent)
         }
 

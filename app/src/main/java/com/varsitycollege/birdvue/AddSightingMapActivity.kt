@@ -1,3 +1,5 @@
+package com.varsitycollege.birdvue
+
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -6,7 +8,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.material.button.MaterialButton
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
 
 class AddSightingMapActivity : AppCompatActivity() {
