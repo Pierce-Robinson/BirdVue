@@ -7,11 +7,11 @@
     <ImageView
         android:contentDescription="@string/app_name"
         android:id="@+id/logoImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/icon"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="60dp"
         />
 
     <TextView
@@ -21,33 +21,35 @@
         android:layout_below="@id/logoImageView"
         android:layout_centerHorizontal="true"
         android:text="@string/create_account"
-        android:textColor="@color/text"
+        android:textColor="?attr/colorOnSecondaryContainer"
         android:textStyle="bold"
         android:textSize="32sp"
         android:padding="10dp"
         android:layout_marginTop="16dp"/>
 
-    <EditText
-        android:id="@+id/usernameEditText"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/headingTextView"
-        android:hint="@string/username"
+        android:hint="Email"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:textSize="24sp"
         android:background="@drawable/rounded_edittext"
         android:drawableStart="@drawable/outline_person_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
         android:layout_marginTop="16dp"
         android:autofillHints="username"
-        android:inputType="text" />
+        android:inputType="textEmailAddress" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameEditText"
+        android:layout_below="@id/emailEditText"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:textSize="24sp"
@@ -55,11 +57,13 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/confirmPasswordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,20 +75,23 @@
         android:drawableStart="@drawable/outline_lock_24"
         android:drawablePadding="10dp"
         android:padding="10dp"
-        android:backgroundTint="@color/background_input"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
         android:layout_marginTop="16dp"
         android:autofillHints="password" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/signupButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingHorizontal="45dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/confirmPasswordEditText"
         android:text="@string/sign_up"
         android:background="@drawable/rounded_button"
         android:layout_marginTop="50dp"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/background_button"/>
+/>
 
     <TextView
         android:id="@+id/goBackTextView"
@@ -94,6 +101,5 @@
         android:layout_centerHorizontal="true"
         android:text="@string/go_back"
         android:textSize="16sp"
-        android:textColor="@color/background_button"
         android:layout_marginTop="16dp"/>
 </RelativeLayout>

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "285070109866",
+    "firebase_url": "https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "birdvue-9288a",
+    "storage_bucket": "birdvue-9288a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285070109866:android:1f8cf00593ab230d7074d3",
+        "android_client_info": {
+          "package_name": "com.varsitycollege.birdvue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD43q76g2ZngHHnhN6gY3r0Po6f69Uhyy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

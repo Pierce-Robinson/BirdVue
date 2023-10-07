@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/md_theme_light_onPrimary"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/icon" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/headingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logoImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:padding="10dp"
+        android:text="@string/login_heading"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/usernameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/headingTextView"
+        android:layout_marginTop="20dp"
+        android:autofillHints="username"
+        android:background="@drawable/rounded_edittext"
+        android:drawableStart="@drawable/outline_person_24"
+        android:drawablePadding="10dp"
+        android:hint="@string/username"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
+        android:textSize="24sp" />
+
+
+    <!-- Add this LinearLayout for the "Remember Me" checkbox -->
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/usernameEditText"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
+        android:background="@drawable/rounded_edittext"
+        android:backgroundTint="?attr/colorSecondaryContainer"
+        android:drawableStart="@drawable/outline_lock_24"
+        android:drawablePadding="10dp"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:padding="10dp"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:textSize="24sp" />
+
+    <LinearLayout
+        android:id="@+id/rememberMeLayout"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordEditText"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/rememberMeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/remember_me"
+            android:layout_gravity="center_vertical"/>
+    </LinearLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/loginButton"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingHorizontal="65dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rememberMeLayout"
+        android:layout_marginTop="20dp"
+        android:text="@string/login"
+ />
+
+    <TextView
+        android:id="@+id/forgotPasswordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/forgot_password"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/orTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="@string/forgot_password"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColorHint="?attr/colorOnSecondaryContainer"
+        android:backgroundTint="?attr/colorSecondaryContainer"
+        android:textSize="16sp" />
+
+    <!-- Separator with 'or' -->
+    <LinearLayout
+        android:id="@+id/orSeparatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/forgotPasswordTextView"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="?attr/colorPrimary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/or"
+            android:textColor="?attr/colorPrimary"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="?attr/colorPrimary"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/signUpPromptLayout"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/orSeparatorLayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <!-- "Don't have an account?" and "Sign up" text -->
+        <TextView
+            android:id="@+id/signUpPromptTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_account"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/signUpTextTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/sign_up"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</RelativeLayout>
