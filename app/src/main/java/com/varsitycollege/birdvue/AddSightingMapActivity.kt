@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -20,47 +22,21 @@ class AddSightingMapActivity : AppCompatActivity() {
         binding = ActivityAddSightingMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Registers a photo picker activity launcher in single-select mode.
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
+
         binding.openGalleryButton.setOnClickListener {
-            if (isGalleryPermissionGranted()) {
-                openGallery()
-            } else {
-                requestGalleryPermission()
-            }
+            // Launch the photo picker and let the user choose only images.
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 
-    private fun isGalleryPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(this, galleryPermission) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestGalleryPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(galleryPermission), galleryPermissionRequestCode)
-    }
-
-    private val galleryPermissionRequestCode = 101
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == galleryPermissionRequestCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery()
-            } else {
-                Toast.makeText(this, "Gallery permission is required to open this gallery", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private val openGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            // Handle the result when an image is selected from the gallery
-            val data: Intent? = result.data
-            // Handle the selected image here
-        }
-    }
-
-    private fun openGallery() {
-        val galleryIntent = Intent(Intent.ACTION_PICK)
-        galleryIntent.type = "image/*"
-        openGalleryLauncher.launch(galleryIntent)
-    }
 }
