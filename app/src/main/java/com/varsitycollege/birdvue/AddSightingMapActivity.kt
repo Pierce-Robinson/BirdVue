@@ -3,9 +3,12 @@ package com.varsitycollege.birdvue
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
@@ -15,7 +18,7 @@ import com.mapbox.maps.Style
 var mapView: MapView? = null
 
 class AddSightingMapActivity : AppCompatActivity() {
-    private val galleryPermission = 101
+    private val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
     private lateinit var binding: ActivityAddSightingMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,35 +26,26 @@ class AddSightingMapActivity : AppCompatActivity() {
         binding = ActivityAddSightingMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.mapView.getMapboxMap()?.loadStyleUri(Style.OUTDOORS)
+        // Registers a photo picker activity launcher in single-select mode.
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                Log.d("PhotoPicker", "Selected URI: $uri")
+        
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
 
         binding.openGalleryButton.setOnClickListener {
-            if (isGalleryPermissionSuccess()) {
-                openGallery()
-            } else {
-                requestGalleryPermission()
-            }
+            // Launch the photo picker and let the user choose only images.
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+        
+        binding.mapView.getMapboxMap()?.loadStyleUri(Style.OUTDOORS)
     }
-
-    private fun isGalleryPermissionSuccess(): Boolean {
-        return (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-    }
-
-    private fun requestGalleryPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), galleryPermission)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == galleryPermission) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openGallery()
-            } else {
-                Toast.makeText(this, "Gallery permission is required to open this galery", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+            
     override fun onStart() {
         super.onStart()
         mapView?.onStart()
@@ -70,10 +64,5 @@ class AddSightingMapActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mapView?.onDestroy()
-    }
-    private fun openGallery() {
-        val galleryIntent = Intent(Intent.ACTION_PICK)
-        galleryIntent.type = "image/*"
-        startActivityForResult(galleryIntent, galleryPermission)
     }
 }
