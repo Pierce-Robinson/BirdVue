@@ -15,6 +15,8 @@
     <string name="or">or</string>
     <string name="no_account">Don\'t have an account?</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="mapbox_access_token">pk.eyJ1IjoicGlybzQ3IiwiYSI6ImNsbmcyYnZyZTB5NnEycXA0ejMyMXljZGYifQ.5SnraH-d438N2ltYuC4VPQ</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--   overview page add sighting  -->
     <string name="details">Details</string>

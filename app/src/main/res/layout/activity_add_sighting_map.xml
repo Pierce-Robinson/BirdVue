@@ -21,7 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/photosTextViewOverview"
         android:layout_width="wrap_content"
@@ -35,6 +34,14 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <!-- This is for the details section -->
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="384dp"
+        android:layout_height="239dp"
+        app:mapbox_cameraTargetLat="40.7128"
+        app:mapbox_cameraTargetLng="-74.0060"
+        app:mapbox_cameraZoom="9.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/openGalleryButton"

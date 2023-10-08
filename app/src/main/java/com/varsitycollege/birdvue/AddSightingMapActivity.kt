@@ -12,6 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+
+var mapView: MapView? = null
 
 class AddSightingMapActivity : AppCompatActivity() {
     private val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
@@ -28,6 +32,7 @@ class AddSightingMapActivity : AppCompatActivity() {
             // photo picker.
             if (uri != null) {
                 Log.d("PhotoPicker", "Selected URI: $uri")
+        
             } else {
                 Log.d("PhotoPicker", "No media selected")
             }
@@ -37,6 +42,27 @@ class AddSightingMapActivity : AppCompatActivity() {
             // Launch the photo picker and let the user choose only images.
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
+        
+        binding.mapView.getMapboxMap()?.loadStyleUri(Style.OUTDOORS)
+    }
+            
+    override fun onStart() {
+        super.onStart()
+        mapView?.onStart()
     }
 
+    override fun onStop() {
+        super.onStop()
+        mapView?.onStop()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
+    }
 }
