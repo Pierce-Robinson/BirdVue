@@ -10,16 +10,22 @@
     tools:context=".ui.HotspotFragment">
 
     <!-- This is for Pierce's MAP -->
-    <TextView
-        android:id="@+id/AddSightingMapPreview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:text="map goes here for PIERCE 3"
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="384dp"
+        android:layout_height="239dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/openGalleryButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:mapbox_cameraTargetLat="40.7128"
+        app:mapbox_cameraTargetLng="-74.0060"
+        app:mapbox_cameraZoom="9.0" />
+
+    <!-- This is for the details section -->
 
     <TextView
         android:id="@+id/photosTextViewOverview"
@@ -30,18 +36,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AddSightingMapPreview"
+        app:layout_constraintTop_toBottomOf="@+id/mapView"
         app:layout_constraintVertical_chainStyle="packed" />
-
-    <!-- This is for the details section -->
-
-    <com.mapbox.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="384dp"
-        android:layout_height="239dp"
-        app:mapbox_cameraTargetLat="40.7128"
-        app:mapbox_cameraTargetLng="-74.0060"
-        app:mapbox_cameraZoom="9.0" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/openGalleryButton"

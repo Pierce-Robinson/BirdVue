@@ -42,8 +42,8 @@ class AddSightingMapActivity : AppCompatActivity() {
             // Launch the photo picker and let the user choose only images.
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
-        
-        binding.mapView.getMapboxMap()?.loadStyleUri(Style.OUTDOORS)
+
+        binding.mapView.getMapboxMap().loadStyleUri(Style.OUTDOORS)
     }
             
     override fun onStart() {
