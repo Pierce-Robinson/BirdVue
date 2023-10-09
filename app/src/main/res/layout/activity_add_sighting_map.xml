@@ -1,35 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:fillViewport="true"
+    android:padding="16dp"
     tools:context=".ui.HotspotFragment">
 
+    <!-- This is for Pierce's MAP -->
+
+    <com.mapbox.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="384dp"
+        android:layout_height="239dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/openGalleryButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:mapbox_cameraTargetLat="40.7128"
+        app:mapbox_cameraTargetLng="-74.0060"
+        app:mapbox_cameraZoom="9.0" />
+
+    <!-- This is for the details section -->
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/photosTextViewOverview"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="map goes here for PIERCE"
-        android:layout_weight="0.3"/>
+        android:layout_marginTop="24dp"
+        android:text="Photos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapView"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/openGalleryButton"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="?attr/colorSecondary"
-        android:onClick="onLogOutClick"
-        android:text="TestButton for gallery"
+        android:onClick="openGalleryButton"
         app:cornerRadius="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon="@drawable/icon_add"
+        app:iconSize="@android:dimen/app_icon_size"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.628"
+        app:layout_constraintTop_toBottomOf="@+id/photosTextViewOverview"
         app:strokeWidth="0dp" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/detailsField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/details"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/openGalleryButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_chainStyle="packed">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="300dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
