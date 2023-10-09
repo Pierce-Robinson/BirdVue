@@ -6,15 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.varsitycollege.birdvue.R
+import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
+import com.varsitycollege.birdvue.databinding.FragmentObservationsBinding
 
 class ObservationsFragment : Fragment() {
+
+    private var _binding: FragmentObservationsBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_observations, container, false)
+        _binding = FragmentObservationsBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
