@@ -65,7 +65,7 @@ class HomeActivity : AppCompatActivity() {
 
         //Floating action button
         binding.fabAdd.setOnClickListener {
-            val intent = Intent(this, AddSightingMapActivity::class.java)
+            val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
         }
 

@@ -20,4 +20,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!--   overview page add sighting  -->
     <string name="details">Details</string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>
