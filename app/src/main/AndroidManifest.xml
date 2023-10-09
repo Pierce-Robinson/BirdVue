@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.varsitycollege.birdvue">
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- this makes use of the gallery or any storage on the device-->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <application
@@ -48,6 +47,12 @@
             </intent-filter>
             <meta-data android:name="photopicker_activity:0:required" android:value="" />
         </service>
+        <!-- Google maps api key, injection handled by secrets gradle plugin
+         https://developers.google.com/codelabs/maps-platform/maps-platform-101-android#3
+         accessed 9 October 2023-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
     </application>
 
 </manifest>
