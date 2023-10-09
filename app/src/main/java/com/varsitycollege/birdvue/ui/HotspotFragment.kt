@@ -1,133 +1,68 @@
 package com.varsitycollege.birdvue.ui
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import android.text.Html
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.varsitycollege.birdvue.R
+import com.varsitycollege.birdvue.BuildConfig
+import com.varsitycollege.birdvue.api.EBirdAPI
+import com.varsitycollege.birdvue.data.Hotspot
+import com.varsitycollege.birdvue.databinding.FragmentHotspotBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-class HotspotFragment : Fragment(), OnMapReadyCallback {
+class HotspotFragment : Fragment() {
 
-    private lateinit var mMap: GoogleMap
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var _binding: FragmentHotspotBinding? = null
+
+    // This property is only valid between onCreateView and onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_hotspot, container, false)
-    }
+    ): View {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        // Inflate the layout for this fragment
+        _binding = FragmentHotspotBinding.inflate(inflater, container, false)
 
-        // Initialize Fused Location Provider
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        //Call api to fetch session token for unique questions
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.ebird.org/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        // Check if location permission is granted
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Permission is granted, get current location
-            getLastLocation()
-        } else {
-            // Request permission from the user
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-        }
-    }
-
-    // ...
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        // Enable location tracking
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request the missing permissions
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_LOCATION_PERMISSION
-            )
-            return
-        }
-        mMap.isMyLocationEnabled = true
-    }
-// ...
-
-
-    private fun getLastLocation() {
-        // Use the Fused Location Provider to get the last known location
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                location?.let {
-                    val myLocation = LatLng(it.latitude, it.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation))
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f))
+        val api = retrofit.create(EBirdAPI::class.java)
+        api.getHotspots(-25.74, 28.22, "json", 10, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
+            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+                val hotspotData = response.body()
+                var text = ""
+                if (hotspotData != null) {
+                    for (h in hotspotData) {
+                        text += h.locName + "\n"
+                    }
                 }
+                binding.apiTest.text = text
             }
+
+            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
+                Log.e("Token error", t.toString())
+            }
+
+        })
+
+        return binding.root
     }
 
-    companion object {
-        const val REQUEST_LOCATION_PERMISSION = 1
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
 }
