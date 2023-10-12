@@ -41,27 +41,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
-// Request location permissions
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            enableMyLocation() // If permissions are already granted, enable location
-        } else {
-            // If permissions are not granted, request them
-            requestPermissions(
-                arrayOf(
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION
-                ),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
+
         val supportMapFragment =
             childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         supportMapFragment?.getMapAsync(this)
