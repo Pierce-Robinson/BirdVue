@@ -2,6 +2,7 @@ package com.varsitycollege.birdvue.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import com.google.android.gms.location.FusedLocationProviderClient
 import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,6 +28,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng
+
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // You can use any integer value here
     private var googleMap: GoogleMap? = null
@@ -107,6 +111,14 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             googleMap?.isMyLocationEnabled = true
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    location?.let {
+                        val latLng = LatLng(it.latitude, it.longitude)
+                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                    }
+                }
         } else {
             // Request location permissions
             requestPermissions(
