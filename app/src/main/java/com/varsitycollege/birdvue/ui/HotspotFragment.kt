@@ -25,6 +25,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+import com.google.android.gms.maps.UiSettings;
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // You can use any integer value here
     private var googleMap: GoogleMap? = null
@@ -40,10 +41,30 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
-
+// Request location permissions
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            enableMyLocation() // If permissions are already granted, enable location
+        } else {
+            // If permissions are not granted, request them
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        }
         val supportMapFragment =
             childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
-
+        supportMapFragment?.getMapAsync(this)
         // Async map
         supportMapFragment.getMapAsync(OnMapReadyCallback { googleMap ->
             // When map is loaded
@@ -62,6 +83,8 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 // Add marker on map
                 googleMap.addMarker(markerOptions)
             }
+            googleMap.uiSettings.isZoomControlsEnabled = true
+            googleMap.uiSettings.isMyLocationButtonEnabled =true
         })
 
 
@@ -135,7 +158,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         googleMap.setOnMapClickListener { latLng ->
             // Your existing code for handling map clicks
         }
-        enableMyLocation() // Enable user's location
+        enableMyLocation()
     }
 
     override fun onMyLocationButtonClick(): Boolean {
