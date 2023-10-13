@@ -1,6 +1,8 @@
 package com.varsitycollege.birdvue.ui
 
+import android.content.ComponentCallbacks
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -29,6 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.varsitycollege.birdvue.data.HotspotAdapter
 
@@ -45,6 +48,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
 
@@ -181,6 +185,33 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 
         })
     }
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+            // Dark mode is active
+            googleMap?.let { enableDarkMode(it) }
+        } else {
+            // Light mode is active
+            googleMap?.let { disableDarkMode(it) }
+        }
+    }
+
+    private fun enableDarkMode(googleMap: GoogleMap) {
+        googleMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                requireContext(), R.raw.map_style_dark
+            )
+        )
+    }
+
+    private fun disableDarkMode(googleMap: GoogleMap) {
+        googleMap.setMapStyle(
+            MapStyleOptions.loadRawResourceStyle(
+                requireContext(), R.raw.map_style_default
+            )
+        )
+    }
+
 
     override fun onMyLocationButtonClick(): Boolean {
         // Handle the button click here
