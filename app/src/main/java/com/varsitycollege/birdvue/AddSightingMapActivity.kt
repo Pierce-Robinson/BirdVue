@@ -9,10 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
 
-var mapView: MapView? = null
+
 
 class AddSightingMapActivity : AppCompatActivity() {
 
