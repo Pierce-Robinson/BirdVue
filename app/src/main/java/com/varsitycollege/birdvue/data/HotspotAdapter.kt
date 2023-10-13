@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.data
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,15 +16,16 @@ class HotspotAdapter(private val hotspotList: List<Hotspot>): RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: HotspotViewHolder, position: Int) {
         val currentItem = hotspotList[position]
+
         holder.title.text = currentItem.locName
-        holder.species.text = "${currentItem.numSpeciesAllTime}"
+        holder.species.text = "Species observed: ${currentItem.numSpeciesAllTime}"
     }
 
     override fun getItemCount(): Int {
         return hotspotList.size
     }
 
-    inner class HotspotViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class HotspotViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.hotspotTitle)
         val species: TextView = itemView.findViewById(R.id.speciesObserved)
     }
