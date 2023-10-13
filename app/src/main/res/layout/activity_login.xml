@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/md_theme_light_onPrimary"
-    android:padding="16dp">
+    android:padding="30dp">
 
     <ImageView
         android:id="@+id/logoImageView"
@@ -12,178 +12,148 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/icon" />
+        android:src="@drawable/icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.061"/>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/headingTextView"
+    <TextView
+        android:id="@+id/login_loginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/logoImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:padding="10dp"
-        android:text="@string/login_heading"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        android:textSize="32sp"
-        android:textStyle="bold" />
+        android:text="Login to your account"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView"
+        app:layout_constraintVertical_bias="0.088"/>
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/usernameEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/usernameEditTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/headingTextView"
-        android:layout_marginTop="20dp"
-        android:autofillHints="username"
-        android:background="@drawable/rounded_edittext"
-        android:drawableStart="@drawable/outline_person_24"
-        android:drawablePadding="10dp"
-        android:hint="@string/username"
-        android:inputType="text"
-        android:padding="10dp"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        android:textColorHint="?attr/colorOnSecondaryContainer"
-        android:backgroundTint="?attr/colorSecondaryContainer"
-        android:textSize="24sp" />
+        android:hint="Email"
+        android:background="@drawable/border_background"
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_loginTitle"
+        app:layout_constraintVertical_bias="0.088"
+        app:boxStrokeWidth="0dp"
+        app:startIconDrawable="@drawable/outline_person_24"
+        >
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/usernameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            />
 
-    <!-- Add this LinearLayout for the "Remember Me" checkbox -->
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/passwordEditText"
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/login_passwordTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/usernameEditText"
-        android:layout_marginTop="16dp"
-        android:autofillHints="password"
-        android:background="@drawable/rounded_edittext"
-        android:backgroundTint="?attr/colorSecondaryContainer"
-        android:drawableStart="@drawable/outline_lock_24"
-        android:drawablePadding="10dp"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:padding="10dp"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        android:textColorHint="?attr/colorOnSecondaryContainer"
-        android:textSize="24sp" />
+        app:boxCornerRadiusTopStart="20dp"
+        app:boxCornerRadiusTopEnd="20dp"
+        app:boxCornerRadiusBottomStart="20dp"
+        app:boxCornerRadiusBottomEnd="20dp"
+        app:endIconMode="password_toggle"
+        app:startIconDrawable="@drawable/outline_lock_24"
+        android:hint="Password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameEditTextField"
+        app:layout_constraintVertical_bias="0.088"
+        app:boxStrokeWidth="0dp">
 
-    <LinearLayout
-        android:id="@+id/rememberMeLayout"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditText"
+            android:inputType="textPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.checkbox.MaterialCheckBox
+        android:id="@+id/login_materialCheckBox"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
-        android:layout_below="@id/passwordEditText"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:text="Remember me"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_passwordTextField"
+        app:layout_constraintVertical_bias="0.088">
 
-        <CheckBox
-            android:id="@+id/rememberMeCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remember_me"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-
+    </com.google.android.material.checkbox.MaterialCheckBox>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingHorizontal="65dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rememberMeLayout"
-        android:layout_marginTop="20dp"
-        android:text="@string/login"
- />
-
-    <TextView
-        android:id="@+id/forgotPasswordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/loginButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/forgot_password"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        android:textColorHint="?attr/colorOnSecondaryContainer"
-        android:backgroundTint="?attr/colorPrimaryContainer"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/orTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/loginButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/forgot_password"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        android:textColorHint="?attr/colorOnSecondaryContainer"
-        android:backgroundTint="?attr/colorSecondaryContainer"
-        android:textSize="16sp" />
-
-    <!-- Separator with 'or' -->
-    <LinearLayout
-        android:id="@+id/orSeparatorLayout"
+        style="@style/Widget.Material3.Button.Icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/forgotPasswordTextView"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:text="Login"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_materialCheckBox"
+        app:layout_constraintVertical_bias="0.088" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="?attr/colorPrimary"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/or"
-            android:textColor="?attr/colorPrimary"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1"
-            android:background="?attr/colorPrimary"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/signUpPromptLayout"
+    <TextView
+        android:id="@+id/signUpTextTextView1"
         android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_height="wrap_content"
-        android:layout_below="@id/orSeparatorLayout"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:textSize="16sp"
+        android:text="Don't have an account?"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_or" />
 
-        <!-- "Don't have an account?" and "Sign up" text -->
-        <TextView
-            android:id="@+id/signUpPromptTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/no_account"
-            android:textSize="16sp"/>
+    <TextView
+        android:id="@+id/signUpTextTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:clickable="true"
+        android:text="Sign Up"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.80"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_or"
+        app:layout_constraintVertical_bias="0.5" />
 
-        <TextView
-            android:id="@+id/signUpTextTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/sign_up"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="16sp"/>
-    </LinearLayout>
-</RelativeLayout>
+
+    <TextView
+        android:id="@+id/login_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/colorOnSecondaryContainer"
+        android:text="OR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginButton"
+        app:layout_constraintVertical_bias="0.26" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,9 +3,12 @@ package com.varsitycollege.birdvue
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -22,6 +25,30 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val usernameEditText = findViewById<EditText>(R.id.usernameEditText)
+        val usernameEditTextField = findViewById<TextInputLayout>(R.id.usernameEditTextField)
+
+        usernameEditText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // When EditText gains focus
+                usernameEditTextField.setBackgroundResource(R.drawable.border_background_focused)
+            } else {
+                // When EditText loses focus
+                usernameEditTextField.setBackgroundResource(R.drawable.border_background)
+            }
+        }
+        val passwordEditText = findViewById<EditText>(R.id.passwordEditText)
+        val login_passwordTextField = findViewById<TextInputLayout>(R.id.login_passwordTextField)
+
+        passwordEditText.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                // When EditText gains focus
+                login_passwordTextField.setBackgroundResource(R.drawable.border_background_focused)
+            } else {
+                // When EditText loses focus
+                login_passwordTextField.setBackgroundResource(R.drawable.border_background)
+            }
+        }
         auth = Firebase.auth
         //If user is currently logged in, go to home page immediately
         val currentUser: FirebaseUser? = auth.currentUser
