@@ -36,8 +36,7 @@
         android:id="@+id/usernameEditTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:background="@drawable/border_background"
+        android:hint="@string/email"
         app:boxCornerRadiusTopStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
@@ -47,7 +46,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_loginTitle"
         app:layout_constraintVertical_bias="0.088"
-        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidth="2dp"
+        app:boxBackgroundColor="@color/md_theme_light_secondaryContainer"
         app:startIconDrawable="@drawable/outline_person_24"
         >
 
@@ -76,7 +76,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameEditTextField"
         app:layout_constraintVertical_bias="0.088"
-        app:boxStrokeWidth="0dp">
+        app:boxStrokeWidth="2dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordEditText"

@@ -23,4 +23,6 @@
     <string name="my_location">My locate</string>
     <string name="bird_name">Bird Name</string>
     <string name="date">Date</string>
+    <string name="submit">Submit</string>
+    <string name="email">Email</string>
 </resources>
