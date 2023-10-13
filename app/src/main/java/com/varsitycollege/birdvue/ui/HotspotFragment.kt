@@ -28,6 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.varsitycollege.birdvue.data.HotspotAdapter
 
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // You can use any integer value here
@@ -42,9 +44,18 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
+
+        val hotspotData = listOf(
+            Hotspot("1", "2", "3", "4", 10.0, 10.0, "5", 5)
+        )
+        val hotspotAdapter = HotspotAdapter(hotspotData)
+        binding.hotspotRecycler.adapter = hotspotAdapter
+
+        //Bottom drawer
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomNavigationContainer)
+        bottomSheetBehavior.peekHeight = 350
 
         val supportMapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         supportMapFragment.getMapAsync(this)
@@ -142,10 +153,16 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
             override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
                 val hotspotData = response.body()
-                var text = ""
+                //var text = ""
                 if (hotspotData != null) {
+                    //Add hotspot to recycler view
+//                    for (item in hotspotData) {
+//                        Log.i("Hotspot Item", item.locName)
+//                    }
+//                    val hotspotAdapter = HotspotAdapter(hotspotData)
+//                    binding.hotspotRecycler.adapter = hotspotAdapter
                     for (h in hotspotData) {
-                        text += h.locName + "\n"
+                        //text += h.locName + "\n"
                         //Add hotspot to map
                         val pos = LatLng(h.lat, h.lng)
                         googleMap?.addMarker(
@@ -156,7 +173,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                         )
                     }
                 }
-                binding.apiTest.text = text
+                //binding.apiTest.text = text
             }
 
             override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
