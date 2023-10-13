@@ -1,6 +1,6 @@
 package com.varsitycollege.birdvue.data
 
-data class Species(
+data class Observation(
     val id: String,
     val birdName: String,
     val date: String,

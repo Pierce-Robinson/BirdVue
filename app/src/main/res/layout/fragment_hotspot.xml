@@ -11,7 +11,12 @@
         android:id="@+id/map_fragment"
         android:layout_height="500dp"
          android:layout_width="match_parent"/>
-
+    <CheckBox
+        android:id="@+id/my_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/my_location" />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
