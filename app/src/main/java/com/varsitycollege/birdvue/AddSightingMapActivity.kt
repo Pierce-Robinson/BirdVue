@@ -1,16 +1,13 @@
 package com.varsitycollege.birdvue
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
@@ -43,26 +40,30 @@ class AddSightingMapActivity : AppCompatActivity() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-        binding.mapView.getMapboxMap().loadStyleUri(Style.OUTDOORS)
-    }
-            
-    override fun onStart() {
-        super.onStart()
-        mapView?.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mapView?.onStop()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        mapView?.onLowMemory()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mapView?.onDestroy()
+//        binding.XXXXX.setOnClickListener {
+//            // Write a task to the database
+//            try {
+//
+//                database = FirebaseDatabase.getInstance("XXXXXXX")
+//                ref = database.getReference("XXXXXX")
+//                val key = ref.push().key
+//                val task = XXXXXXXXX(
+//                    id = key!!,
+//                    XXXXXXX = binding.XXXXXXXXX.text.toString(),
+//                    XXXXXX = binding.XXXXXXX.text.toString(),
+//                    XXXXXXX = binding.XXXXX.text.toString(),
+//                    XXXXXXX = binding.XXXX.text.toString(),
+//                    imageId = downloadUrl,
+//                    userId = FirebaseAuth.getInstance().currentUser!!.uid
+//                )
+//                XXXXXX.id?.let { it1 ->
+//                    ref.child(it1).setValue(XXXX).addOnSuccessListener {
+//                        Toast.makeText(applicationContext, "Success.", Toast.LENGTH_LONG).show()
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
+//            }
+//        }
     }
 }
