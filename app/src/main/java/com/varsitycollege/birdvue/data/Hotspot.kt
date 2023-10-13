@@ -5,8 +5,8 @@ data class Hotspot(
     val locName: String,
     val countryCode: String,
     val subnational1Code: String,
-    val lat: Number,
-    val lng: Number,
+    val lat: Double,
+    val lng: Double,
     val latestObsDt: String,
-    val numSpeciesAllTime: Number
+    val numSpeciesAllTime: Int
 )

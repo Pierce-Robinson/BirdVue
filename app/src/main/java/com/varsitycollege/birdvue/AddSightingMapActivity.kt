@@ -18,7 +18,7 @@ import com.mapbox.maps.Style
 var mapView: MapView? = null
 
 class AddSightingMapActivity : AppCompatActivity() {
-    private val galleryPermission = Manifest.permission.READ_EXTERNAL_STORAGE
+
     private lateinit var binding: ActivityAddSightingMapBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

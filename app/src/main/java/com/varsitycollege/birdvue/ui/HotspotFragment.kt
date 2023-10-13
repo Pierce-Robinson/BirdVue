@@ -2,8 +2,6 @@ package com.varsitycollege.birdvue.ui
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import com.google.android.gms.location.FusedLocationProviderClient
-import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
@@ -27,13 +26,14 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // You can use any integer value here
     private var googleMap: GoogleMap? = null
     private var _binding: FragmentHotspotBinding? = null
+    private lateinit var userLocation: LatLng
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -46,56 +46,33 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
 
-        val supportMapFragment =
-            childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
-        supportMapFragment?.getMapAsync(this)
+        val supportMapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        supportMapFragment.getMapAsync(this)
         // Async map
         supportMapFragment.getMapAsync(OnMapReadyCallback { googleMap ->
             // When map is loaded
             googleMap.setOnMapClickListener { latLng ->
                 // When clicked on map
                 // Initialize marker options
-                val markerOptions = MarkerOptions()
+                //val markerOptions = MarkerOptions()
                 // Set position of marker
-                markerOptions.position(latLng)
+                //markerOptions.position(latLng)
                 // Set title of marker
-                markerOptions.title("${latLng.latitude} : ${latLng.longitude}")
+                //markerOptions.title("${latLng.latitude} : ${latLng.longitude}")
                 // Remove all markers
-                googleMap.clear()
+                //googleMap.clear()
                 // Animating to zoom the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
                 // Add marker on map
-                googleMap.addMarker(markerOptions)
+                //googleMap.addMarker(markerOptions)
             }
             googleMap.uiSettings.isZoomControlsEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled =true
-        })
 
-
-
-        //Call api to fetch session token for unique questions
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.ebird.org/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(EBirdAPI::class.java)
-        api.getHotspots(-25.74, 28.22, "json", 10, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
-            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
-                val hotspotData = response.body()
-                var text = ""
-                if (hotspotData != null) {
-                    for (h in hotspotData) {
-                        text += h.locName + "\n"
-                    }
-                }
-                binding.apiTest.text = text
+            googleMap.setOnMarkerClickListener {
+                //Maybe initialize navigation for the hotspot markers here
+                false
             }
-
-            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
-                Log.e("Token error", t.toString())
-            }
-
         })
 
         return binding.root
@@ -115,8 +92,10 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
                     location?.let {
-                        val latLng = LatLng(it.latitude, it.longitude)
-                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                        userLocation = LatLng(it.latitude, it.longitude)
+                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                        //Get hotspot data after user's location is set
+                        getHotspotData()
                     }
                 }
         } else {
@@ -147,10 +126,44 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-        googleMap.setOnMapClickListener { latLng ->
-            // Your existing code for handling map clicks
-        }
+
         enableMyLocation()
+    }
+
+    private fun getHotspotData() {
+        //Call eBird api to fetch hotspot data
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.ebird.org/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(EBirdAPI::class.java)
+        //TODO: Change distance to user's selected setting
+        api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
+            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+                val hotspotData = response.body()
+                var text = ""
+                if (hotspotData != null) {
+                    for (h in hotspotData) {
+                        text += h.locName + "\n"
+                        //Add hotspot to map
+                        val pos = LatLng(h.lat, h.lng)
+                        googleMap?.addMarker(
+                            MarkerOptions()
+                                .position(pos)
+                                .title(h.locName)
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        )
+                    }
+                }
+                binding.apiTest.text = text
+            }
+
+            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
+                Log.e("API Error", t.toString())
+            }
+
+        })
     }
 
     override fun onMyLocationButtonClick(): Boolean {
