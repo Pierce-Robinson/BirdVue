@@ -8,7 +8,7 @@
     <item
         android:id="@+id/bottom_map"
         android:icon="@drawable/icon_map"
-        android:title="Map" />
+        android:title="Hotspots" />
 
     <item
         android:id="@+id/placeholder"
