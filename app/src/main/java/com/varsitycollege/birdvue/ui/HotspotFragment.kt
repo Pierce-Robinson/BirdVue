@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -46,12 +47,6 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
-
-        val hotspotData = listOf(
-            Hotspot("1", "2", "3", "4", 10.0, 10.0, "5", 5)
-        )
-        val hotspotAdapter = HotspotAdapter(hotspotData)
-        binding.hotspotRecycler.adapter = hotspotAdapter
 
         //Bottom drawer
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomNavigationContainer)
@@ -159,18 +154,22 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 //                    for (item in hotspotData) {
 //                        Log.i("Hotspot Item", item.locName)
 //                    }
-//                    val hotspotAdapter = HotspotAdapter(hotspotData)
-//                    binding.hotspotRecycler.adapter = hotspotAdapter
+                    val hotspotAdapter = HotspotAdapter(hotspotData)
+                    binding.hotspotRecycler.adapter = hotspotAdapter
+                    binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
                     for (h in hotspotData) {
                         //text += h.locName + "\n"
                         //Add hotspot to map
-                        val pos = LatLng(h.lat, h.lng)
-                        googleMap?.addMarker(
-                            MarkerOptions()
-                                .position(pos)
-                                .title(h.locName)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        )
+                        if (h.lat != null && h.lng != null) {
+                            val pos = LatLng(h.lat, h.lng)
+                            googleMap?.addMarker(
+                                MarkerOptions()
+                                    .position(pos)
+                                    .title(h.locName)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            )
+                        }
+
                     }
                 }
                 //binding.apiTest.text = text

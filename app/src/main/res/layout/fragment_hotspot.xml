@@ -18,7 +18,7 @@
     <LinearLayout
         android:id="@+id/bottom_navigation_container"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="700dp"
         android:elevation="1dp"
         android:fitsSystemWindows="true"
         android:orientation="vertical"
@@ -26,17 +26,11 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:background="@drawable/linear_rounded_background">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Test"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hotspot_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="2dp"
-            android:background="@color/md_theme_light_primary"/>
+            tools:listitem="@layout/hotspot_item"/>
 
 <!--        <ScrollView-->
 <!--            android:layout_width="match_parent"-->
