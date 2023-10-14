@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
@@ -26,6 +28,7 @@ class AddSightingMapActivity : AppCompatActivity() {
     private lateinit var photoFile: File
     private lateinit var photoPreview: ImageView
     private val REQUEST_IMAGE_CAPTURE = 1
+    private var selectedImageBitmap: Bitmap? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddSightingMapBinding.inflate(layoutInflater)
@@ -94,32 +97,6 @@ class AddSightingMapActivity : AppCompatActivity() {
             // Launch the photo picker and let the user choose only images.
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
-
-//        binding.XXXXX.setOnClickListener {
-//            // Write a task to the database
-//            try {
-//
-//                database = FirebaseDatabase.getInstance("XXXXXXX")
-//                ref = database.getReference("XXXXXX")
-//                val key = ref.push().key
-//                val task = XXXXXXXXX(
-//                    id = key!!,
-//                    XXXXXXX = binding.XXXXXXXXX.text.toString(),
-//                    XXXXXX = binding.XXXXXXX.text.toString(),
-//                    XXXXXXX = binding.XXXXX.text.toString(),
-//                    XXXXXXX = binding.XXXX.text.toString(),
-//                    imageId = downloadUrl,
-//                    userId = FirebaseAuth.getInstance().currentUser!!.uid
-//                )
-//                XXXXXX.id?.let { it1 ->
-//                    ref.child(it1).setValue(XXXX).addOnSuccessListener {
-//                        Toast.makeText(applicationContext, "Success.", Toast.LENGTH_LONG).show()
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
-//            }
-//        }
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
