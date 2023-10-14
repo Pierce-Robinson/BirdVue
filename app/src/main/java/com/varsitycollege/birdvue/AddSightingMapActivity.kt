@@ -8,9 +8,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
-
-
 
 class AddSightingMapActivity : AppCompatActivity() {
 
@@ -21,12 +20,46 @@ class AddSightingMapActivity : AppCompatActivity() {
         binding = ActivityAddSightingMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Registers a photo picker activity launcher in single-select mode.
+        val database =FirebaseDatabase.getInstance()
+        val ref = database.getReference("observations")
+
+        // registers a photo picker activity launcher in single select mode.
+        // Link: https://developer.android.com/training/data-storage/shared/photopicker
+        // accessed: 13 October 2023
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            // Callback is invoked after the user selects a media item or closes the
-            // photo picker.
+            // this callback is invoked after they choose an image or close the photo picker
             if (uri != null) {
                 Log.d("PhotoPicker", "Selected URI: $uri")
+                val birdName = binding.birdNameFieldEditText.text.toString()
+                val details = binding.detailsFieldEditText.text.toString()
+                val date = "" //we get this date from the date picekr
+                val photoUrl = uri.toString()
+
+                val observation = Observation(
+                    id = "", // use a unique ID or use push() in Firebase
+                    birdName = birdName,
+                    date = date,
+                    photo = photoUrl,
+                    details = details,
+                    lat = 0.0, // daniel please provide actual latitude
+                    lng = 0.0, // daniel please provid actual longitude
+                    location = "Your Location",
+                    likes = 0, // ahd to put something here because of the data class
+                    comments = emptyList() // theres no comments for now i know
+                )
+
+                // pushing the data fpr observation to firebase
+                // link: https://www.geeksforgeeks.org/how-to-save-data-to-the-firebase-realtime-database-in-android/
+                // accessed: 13 October 2023
+                val key = ref.push().key
+                if (key != null) {
+                    ref.child(key).setValue(observation).addOnSuccessListener {
+                        Toast.makeText(applicationContext, "Observation was added successfully.", Toast.LENGTH_LONG).show()
+                    }.addOnFailureListener { e ->
+                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+
         
             } else {
                 Log.d("PhotoPicker", "No media selected")

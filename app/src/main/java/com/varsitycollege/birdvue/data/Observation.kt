@@ -12,3 +12,4 @@ data class Observation(
     val likes: Number,
     val comments: List<Comment>
 )
+
