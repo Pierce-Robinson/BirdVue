@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun register() {
         //TODO: add validation and visualize errors once ui fixed
         try {
-            val email = "" + binding.emailEditText.text
+            val email = "" + binding.registerEmailEditText.text
             val password = "" + binding.passwordEditText.text
             //TODO: get name from name field
             val name = "TEMP NAME"
@@ -80,7 +80,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun writeNewUser(userId: String, name: String, email: String, maxDistance: Number) {
+    private fun writeNewUser(userId: String, name: String, email: String, maxDistance: Int) {
         val user = User(userId, name, email, maxDistance)
         val ref = database.getReference("users")
         ref.child(userId).setValue(user).addOnSuccessListener{

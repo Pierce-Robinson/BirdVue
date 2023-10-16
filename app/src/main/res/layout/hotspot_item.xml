@@ -23,12 +23,12 @@
             android:id="@+id/RecycleImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginEnd="10dp"
             android:layout_marginVertical="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/icon_home"
+            app:srcCompat="@drawable/icon_pin"
+            android:tint="?attr/colorSecondary"
             app:shapeAppearanceOverlay="@style/ImageView.Corner"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -43,16 +43,18 @@
                 android:text="Hotspot Title"
                 android:maxWidth="150dp"
                 android:minWidth="150dp"
-                android:maxHeight="50dp"
+                android:maxHeight="65dp"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:gravity="center_vertical"
                 android:layout_margin="5dp"/>
 
             <TextView
                 android:id="@+id/speciesObserved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxHeight="70dp"
+                android:gravity="center_vertical"
+                android:maxHeight="50dp"
                 android:maxWidth="155dp"
                 android:text="Species observed: 69"
                 android:textSize="16sp"
@@ -66,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_navigation_arrow"
+            app:tint="?attr/colorSecondary"
             android:layout_marginStart="10dp"
             app:maxImageSize="40dp"
             app:borderWidth="0dp"/>

@@ -33,7 +33,7 @@
         app:layout_constraintVertical_bias="0.088"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/usernameEditTextField"
+        android:id="@+id/emailEditTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email"
@@ -47,12 +47,12 @@
         app:layout_constraintTop_toBottomOf="@+id/login_loginTitle"
         app:layout_constraintVertical_bias="0.088"
         app:boxStrokeWidth="2dp"
-        app:boxBackgroundColor="@color/md_theme_light_secondaryContainer"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         app:startIconDrawable="@drawable/outline_person_24"
         >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/usernameEditText"
+            android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
@@ -70,11 +70,12 @@
         app:boxCornerRadiusBottomEnd="20dp"
         app:endIconMode="password_toggle"
         app:startIconDrawable="@drawable/outline_lock_24"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         android:hint="Password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameEditTextField"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditTextField"
         app:layout_constraintVertical_bias="0.088"
         app:boxStrokeWidth="2dp">
 
@@ -87,32 +88,34 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/login_materialCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remember me"
-        android:textColor="?attr/colorOnSecondaryContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_passwordTextField"
-        app:layout_constraintVertical_bias="0.088">
+<!--    <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--        android:id="@+id/login_materialCheckBox"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Remember me"-->
+<!--        android:textColor="?attr/colorOnSecondaryContainer"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/login_passwordTextField"-->
+<!--        app:layout_constraintVertical_bias="0.088">-->
 
-    </com.google.android.material.checkbox.MaterialCheckBox>
+<!--    </com.google.android.material.checkbox.MaterialCheckBox>-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/loginButton"
-        style="@style/Widget.Material3.Button.Icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/colorOnSecondaryContainer"
+        android:layout_height="60dp"
+        android:backgroundTint="?colorSecondary"
+        android:textColor="?attr/colorSecondaryContainer"
+        android:layout_marginTop="10dp"
+        app:cornerRadius="20dp"
         android:text="Login"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_materialCheckBox"
+        app:layout_constraintTop_toBottomOf="@+id/login_passwordTextField"
         app:layout_constraintVertical_bias="0.088" />
 
     <TextView
@@ -136,7 +139,7 @@
         android:clickable="true"
         android:text="Sign Up"
         android:textSize="16sp"
-        android:textColor="?attr/colorOnSecondaryContainer"
+        android:textColor="?attr/colorTertiary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.80"

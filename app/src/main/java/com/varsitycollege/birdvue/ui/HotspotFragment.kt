@@ -1,20 +1,19 @@
 package com.varsitycollege.birdvue.ui
 
-import android.content.ComponentCallbacks
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MarkerOptions
@@ -28,18 +27,20 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.varsitycollege.birdvue.data.HomeViewModel
 import com.varsitycollege.birdvue.data.HotspotAdapter
 
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
+
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // You can use any integer value here
     private var googleMap: GoogleMap? = null
     private var _binding: FragmentHotspotBinding? = null
     private lateinit var userLocation: LatLng
+    private lateinit var model: HomeViewModel
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -51,6 +52,9 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
 
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
+
+        //Initialize viewModel
+        model = ViewModelProvider(this)[HomeViewModel::class.java]
 
         //Bottom drawer
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomNavigationContainer)
@@ -72,7 +76,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 // Remove all markers
                 //googleMap.clear()
                 // Animating to zoom the marker
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                 // Add marker on map
                 //googleMap.addMarker(markerOptions)
             }
@@ -103,9 +107,9 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 .addOnSuccessListener { location ->
                     location?.let {
                         userLocation = LatLng(it.latitude, it.longitude)
-                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                         //Get hotspot data after user's location is set
                         getHotspotData()
+                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                     }
                 }
         } else {
@@ -141,60 +145,90 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     }
 
     private fun getHotspotData() {
-        //Call eBird api to fetch hotspot data
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.ebird.org/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val api = retrofit.create(EBirdAPI::class.java)
         //TODO: Change distance to user's selected setting
-        api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
-            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
-                val hotspotData = response.body()
-                //var text = ""
-                if (hotspotData != null) {
-                    //Add hotspot to recycler view
-//                    for (item in hotspotData) {
-//                        Log.i("Hotspot Item", item.locName)
-//                    }
-                    val hotspotAdapter = HotspotAdapter(hotspotData)
-                    binding.hotspotRecycler.adapter = hotspotAdapter
-                    binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
-                    for (h in hotspotData) {
-                        //text += h.locName + "\n"
-                        //Add hotspot to map
-                        if (h.lat != null && h.lng != null) {
-                            val pos = LatLng(h.lat, h.lng)
-                            googleMap?.addMarker(
-                                MarkerOptions()
-                                    .position(pos)
-                                    .title(h.locName)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            )
-                        }
+        //TODO: BUG This is always empty at the moment
+        if (model.getHotspotList().isNotEmpty()) {
+            //Get hotspots from viewmodel
+            Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from viewmodel", Toast.LENGTH_LONG).show()
+            Log.i("Get Hotspot", "Get Hotspot from viewmodel")
+            //TODO: Remember to set saved hotspot list to null again if user changes distance
+            val hotspotData = model.getHotspotList()
+            //Add hotspot to recycler view
+            val hotspotAdapter = HotspotAdapter(hotspotData)
+            binding.hotspotRecycler.adapter = hotspotAdapter
+            binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
+            for (h in hotspotData) {
+                //Add hotspot to map
+                if (h.lat != null && h.lng != null) {
+                    val pos = LatLng(h.lat, h.lng)
+                    googleMap?.addMarker(
+                        MarkerOptions()
+                            .position(pos)
+                            .title(h.locName)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    )
+                }
 
+            }
+        } else {
+            Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
+            //Call eBird api to fetch hotspot data
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api.ebird.org/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val api = retrofit.create(EBirdAPI::class.java)
+
+            api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
+                override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+                    val hotspotData = response.body()
+                    if (hotspotData != null) {
+                        //Update viewmodel list
+                        model.updateHotspotList(hotspotData)
+                        //Add hotspot to recycler view
+                        val hotspotAdapter = HotspotAdapter(hotspotData)
+                        binding.hotspotRecycler.adapter = hotspotAdapter
+                        binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
+                        for (h in hotspotData) {
+                            //Add hotspot to map
+                            if (h.lat != null && h.lng != null) {
+                                val pos = LatLng(h.lat, h.lng)
+                                googleMap?.addMarker(
+                                    MarkerOptions()
+                                        .position(pos)
+                                        .title(h.locName)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                )
+                            }
+                        }
+                        var text = ""
+                        for (m in model.getHotspotList()!!) {
+                            text += m.locName + "_"
+                        }
+                        Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, text, Toast.LENGTH_LONG).show()
                     }
                 }
-                //binding.apiTest.text = text
-            }
 
-            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
-                Log.e("API Error", t.toString())
-            }
+                override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
+                    Log.e("API Error", t.toString())
+                }
 
-        })
-    }
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
-            // Dark mode is active
-            googleMap?.let { enableDarkMode(it) }
-        } else {
-            // Light mode is active
-            googleMap?.let { disableDarkMode(it) }
+            })
         }
     }
+
+    //TODO: fix dark mode switch and map
+//    override fun onConfigurationChanged(newConfig: Configuration) {
+//        super.onConfigurationChanged(newConfig)
+//        if (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+//            // Dark mode is active
+//            googleMap?.let { enableDarkMode(it) }
+//        } else {
+//            // Light mode is active
+//            googleMap?.let { disableDarkMode(it) }
+//        }
+//    }
 
     private fun enableDarkMode(googleMap: GoogleMap) {
         googleMap.setMapStyle(
@@ -212,11 +246,11 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         )
     }
 
-
     override fun onMyLocationButtonClick(): Boolean {
         // Handle the button click here
         return false // Return false to let the default behavior occur
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

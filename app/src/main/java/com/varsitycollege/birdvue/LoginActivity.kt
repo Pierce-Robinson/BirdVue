@@ -48,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         //TODO: add validation and visualize errors once ui fixed
-        val email = "" + binding.usernameEditText.text
+        val email = "" + binding.emailEditText.text
         val password = "" + binding.passwordEditText.text
         auth.signInWithEmailAndPassword(email,password).addOnCompleteListener { task ->
             if(task.isSuccessful){

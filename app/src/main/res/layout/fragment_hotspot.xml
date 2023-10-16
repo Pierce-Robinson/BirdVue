@@ -26,6 +26,14 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:background="@drawable/linear_rounded_background">
 
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="8dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/drag_handle"
+            android:contentDescription="Drag Handle" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hotspot_recycler"
             android:layout_width="match_parent"

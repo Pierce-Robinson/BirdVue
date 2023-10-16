@@ -40,6 +40,7 @@
         app:boxCornerRadiusBottomStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusTopStart="20dp"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         app:boxStrokeWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +50,7 @@
         app:startIconDrawable="@drawable/outline_email_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailEditText"
+            android:id="@+id/register_emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
@@ -65,6 +66,7 @@
         app:boxCornerRadiusBottomStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusTopStart="20dp"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         app:boxStrokeWidth="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,6 +91,7 @@
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusBottomStart="20dp"
         app:boxCornerRadiusBottomEnd="20dp"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         app:boxStrokeWidth="2dp"
         app:startIconDrawable="@drawable/outline_lock_24"
         app:endIconMode="password_toggle"
@@ -114,6 +117,7 @@
         app:boxCornerRadiusBottomStart="20dp"
         app:boxCornerRadiusTopEnd="20dp"
         app:boxCornerRadiusTopStart="20dp"
+        app:boxBackgroundColor="?colorSecondaryContainer"
         app:boxStrokeWidth="2dp"
         app:endIconMode="password_toggle"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -132,9 +136,11 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signupButton"
-        style="@style/Widget.Material3.Button.Icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
+        app:cornerRadius="20dp"
+        android:backgroundTint="?colorSecondary"
+        android:textColor="?attr/colorSecondaryContainer"
         android:text="@string/sign_up"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -150,6 +156,7 @@
         android:padding="15dp"
         android:text="Go back"
         android:textSize="16sp"
+        android:textColor="?colorTertiary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

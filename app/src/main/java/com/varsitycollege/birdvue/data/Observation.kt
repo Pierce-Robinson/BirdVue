@@ -1,16 +1,16 @@
 package com.varsitycollege.birdvue.data
 
 data class Observation(
-    val id: String,
-    val birdName: String,
-    val date: String,
+    val id: String ?= null,
+    val birdName: String ?= null,
+    val date: String ?= null,
     val photo: String ?= null,
-    val details: String,
-    val lat: Number,
-    val lng: Number,
-    val location: String,
-    val likes: Number,
-    val comments: List<Comment>,
+    val details: String ?= null,
+    val lat: Number ?= null,
+    val lng: Number ?= null,
+    val location: String ?= null,
+    val likes: Number ?= null,
+    val comments: List<Comment> ?= null,
     val userId: String ?= null
 )
 

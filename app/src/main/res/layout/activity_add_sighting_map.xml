@@ -12,6 +12,7 @@
 
 
     <DatePicker
+        android:theme="@style/MyDatePicker"
         android:id="@+id/datePicker1"
         android:layout_width="230dp"
         android:layout_height="180dp"
@@ -21,28 +22,38 @@
         app:layout_constraintBottom_toTopOf="@+id/birdNameField"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/openGalleryButton"
-        android:layout_width="115dp"
-        android:layout_height="115dp"
-        android:layout_marginStart="10dp"
-        android:backgroundTint="?attr/colorSecondary"
-        android:onClick="openGalleryButton"
-        app:cornerRadius="20dp"
-        app:icon="@drawable/icon_add"
-        app:iconSize="@android:dimen/notification_large_icon_width"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/openGalleryFrame"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toTopOf="@+id/birdNameField"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_fragment"
-        app:layout_constraintVertical_bias="0.78"
-        app:strokeWidth="0dp" />
+        app:layout_constraintVertical_bias="0.78">
+
+        <ImageView
+            android:id="@+id/openGalleryButton"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:background="?colorSecondary"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/openGalleryIcon"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/icon_add"
+            android:layout_gravity="center" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="391dp"
+        android:layout_width="match_parent"
         android:layout_height="400dp"
         android:paddingBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/datePicker1"
@@ -69,8 +80,9 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/detailsFieldEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="300dp" />
+            android:gravity="top"
+            android:layout_height="100dp"
+            android:maxHeight="100dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -98,23 +110,21 @@
         android:id="@+id/photosTextViewOverview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Photos"
+        android:layout_marginBottom="16dp"
+        android:text="Add Photo"
+        android:textColor="?colorSecondary"
         android:textSize="18dp"
-        app:layout_constraintBottom_toTopOf="@+id/openGalleryButton"
+        app:layout_constraintBottom_toTopOf="@+id/openGalleryFrame"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.049"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/overviewSubmitButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="60dp"
-        android:backgroundTint="?attr/colorOnSurfaceVariant"
-        android:onClick="overviewSubmitButton"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="?attr/colorSecondary"
         android:text="@string/submit"
         android:textSize="18dp"
         app:cornerRadius="20dp"
