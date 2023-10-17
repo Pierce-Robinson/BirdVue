@@ -1,46 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:radius="8dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
     <ImageView
         android:id="@+id/postImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:src="@drawable/icon" />
-
-
-    <ImageView
-        android:id="@+id/profilePicture"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/icon" />
-
-
-    <TextView
-        android:id="@+id/birdNameField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/bird_name"
-        android:textStyle="bold"
-        android:textSize="16sp" />
-
-
-    <TextView
-        android:id="@+id/caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginStart="8dp"
-        android:text="Caption for the post" />
-
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -48,18 +27,60 @@
         android:orientation="horizontal"
         android:layout_marginTop="8dp">
 
-        <ImageButton
-            android:id="@+id/likeButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_like" />
+    <ImageView
+        android:id="@+id/profilePicture"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="0dp"
+        android:src="@drawable/icon" />
 
-        <ImageButton
-            android:id="@+id/commentButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_comment" />
 
+    <TextView
+        android:id="@+id/birdNameField"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/bird_name"
+        android:textStyle="bold"
+        android:textSize="20sp" />
     </LinearLayout>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="Caption for the post" />
+
+        <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+            <Button
+                android:id="@+id/likeButton"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:iconTint="?colorOnSecondaryContainer"
+                android:backgroundTint="?colorSecondaryContainer"
+                app:icon="@drawable/heart_border_24"
+                app:iconGravity="textStart"/>
+
+
+            <Button
+                android:id="@+id/commentButton"
+                style="?attr/materialIconButtonFilledTonalStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:iconTint="?colorOnSecondaryContainer"
+                android:backgroundTint="?colorSecondaryContainer"
+                app:icon="@drawable/outline_mode_comment_24"
+                app:iconGravity="textStart"/>
+    </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
