@@ -6,11 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.varsitycollege.birdvue.LoginActivity
-import com.varsitycollege.birdvue.R
 import com.varsitycollege.birdvue.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -53,4 +53,46 @@ class SettingsFragment : Fragment() {
         }
     }
 
+
+    private fun onDeleteAccountClick(view : View) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user != null) {
+            // this will show a confirmation popup for deletion
+            AlertDialog.Builder(requireContext())
+                .setTitle("delete account")
+                .setMessage("Are you sure you want to delete your account?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // deelete the user account
+
+                    user.delete()
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+
+                                // account deleted successfully
+                                FirebaseAuth.getInstance().signOut()
+                                Toast.makeText(requireContext(), "Your account has been deleted successfully", Toast.LENGTH_SHORT).show()
+
+                                // go to the login screen
+                                val intent = Intent(requireContext(), LoginActivity::class.java)
+                                startActivity(intent)
+                                requireActivity().finish() // Finish the current activity after logout
+                            } else {
+                                // if te account deletion failed
+                                Toast.makeText(requireContext(), "Sorry we failed to delete your account. Please try again.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+                .setNegativeButton("No", null)
+                .show()
+        } else {
+            // if the iser isnt sigened in
+            Toast.makeText(requireContext(), "It seems that you are not currently logged in.", Toast.LENGTH_SHORT).show()
+        }
+    }
 }
+
+
+
+
+
