@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.varsitycollege.birdvue.LoginActivity
 import com.varsitycollege.birdvue.databinding.FragmentSettingsBinding
 
@@ -17,6 +19,8 @@ class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -36,6 +40,11 @@ class SettingsFragment : Fragment() {
             }
         }
 
+        //Handle delete account
+        binding.deleteAccountButton.setOnClickListener {
+            deleteAccount()
+        }
+
         return binding.root
     }
 
@@ -53,42 +62,48 @@ class SettingsFragment : Fragment() {
         }
     }
 
-
-    private fun onDeleteAccountClick(view : View) {
-        val user = FirebaseAuth.getInstance().currentUser
-
-        if (user != null) {
-            // this will show a confirmation popup for deletion
-            AlertDialog.Builder(requireContext())
-                .setTitle("delete account")
-                .setMessage("Are you sure you want to delete your account?")
-                .setPositiveButton("Yes") { _, _ ->
-                    // deelete the user account
-
-                    user.delete()
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-
-                                // account deleted successfully
-                                FirebaseAuth.getInstance().signOut()
-                                Toast.makeText(requireContext(), "Your account has been deleted successfully", Toast.LENGTH_SHORT).show()
-
-                                // go to the login screen
-                                val intent = Intent(requireContext(), LoginActivity::class.java)
-                                startActivity(intent)
-                                requireActivity().finish() // Finish the current activity after logout
-                            } else {
-                                // if te account deletion failed
-                                Toast.makeText(requireContext(), "Sorry we failed to delete your account. Please try again.", Toast.LENGTH_SHORT).show()
+    private fun deleteAccount() {
+        // this will show a confirmation popup for deletion
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Account")
+            .setMessage("Are you sure you want to delete your account?")
+            .setPositiveButton("Yes") { _, _ ->
+                // delete the user account
+                auth = FirebaseAuth.getInstance()
+                try {
+                    val id = auth.currentUser?.uid
+                    //Delete user's object (Before account deletion to retain permissions
+                    database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+                    ref = database.getReference("users")
+                    if (id != null) {
+                        ref.child(id).removeValue().addOnSuccessListener {
+                            //On object deletion success, delete user account and return to login screen
+                            auth.currentUser?.delete()?.addOnSuccessListener {
+                                activity?.let {
+                                    val intent = Intent(it, LoginActivity::class.java)
+                                    it.startActivity(intent)
+                                    it.finish() // Finish the current activity after logout
+                                }
                             }
+                        }.addOnFailureListener {
+                            Toast.makeText(
+                                this@SettingsFragment.requireActivity().applicationContext,
+                                it.localizedMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@SettingsFragment.requireActivity().applicationContext,
+                        "Please login, then try again.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    logOut()
                 }
-                .setNegativeButton("No", null)
-                .show()
-        } else {
-            // if the iser isnt sigened in
-            Toast.makeText(requireContext(), "It seems that you are not currently logged in.", Toast.LENGTH_SHORT).show()
-        }
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 }
 

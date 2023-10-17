@@ -36,18 +36,18 @@
 
             <TextView
                 android:id="@+id/textDarkMode"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Dark Mode"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/darkModeCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:checked="false"
                 android:padding="2dp" /> <!-- Align to the right -->
         </LinearLayout>
@@ -68,18 +68,18 @@
 
             <TextView
                 android:id="@+id/textNotifications"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Notifications"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/notificationsCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:checked="false"
                 android:padding="8dp" /> <!-- Align to the right -->
         </LinearLayout>
@@ -100,18 +100,18 @@
 
             <TextView
                 android:id="@+id/textMetricUnits"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Metric Units"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/metricUnitsCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:checked="true"
                 android:padding="8dp" /> <!-- Align to the right -->
         </LinearLayout>
@@ -137,14 +137,13 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Max Distance"
-                android:textSize="18dp" />
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/maxDistanceEditText"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:hint=""
                 android:inputType="number"
                 android:padding="8dp" />
         </LinearLayout>
@@ -156,7 +155,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:backgroundTint="?attr/colorSecondary"
-        android:onClick="onLogOutClick"
         android:text="Log Out"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -172,7 +170,6 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:backgroundTint="?attr/colorError"
-        android:onClick="onDeleteAccountClick"
         android:text="Delete Account"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
