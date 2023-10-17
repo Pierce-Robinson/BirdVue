@@ -1,6 +1,7 @@
 package com.varsitycollege.birdvue.ui
 
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -67,18 +68,8 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
             // When map is loaded
             googleMap.setOnMapClickListener { latLng ->
                 // When clicked on map
-                // Initialize marker options
-                //val markerOptions = MarkerOptions()
-                // Set position of marker
-                //markerOptions.position(latLng)
-                // Set title of marker
-                //markerOptions.title("${latLng.latitude} : ${latLng.longitude}")
-                // Remove all markers
-                //googleMap.clear()
                 // Animating to zoom the marker
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-                // Add marker on map
-                //googleMap.addMarker(markerOptions)
             }
             googleMap.uiSettings.isZoomControlsEnabled = true
             googleMap.uiSettings.isMyLocationButtonEnabled =true
@@ -145,7 +136,6 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     }
 
     private fun getHotspotData() {
-        //TODO: Change distance to user's selected setting
         //TODO: BUG This is always empty at the moment
         if (model.getHotspotList().isNotEmpty()) {
             //Get hotspots from viewmodel
@@ -179,7 +169,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 .build()
 
             val api = retrofit.create(EBirdAPI::class.java)
-
+            //TODO: Change distance to user's selected setting
             api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
                 override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
                     val hotspotData = response.body()
@@ -203,7 +193,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                             }
                         }
                         var text = ""
-                        for (m in model.getHotspotList()!!) {
+                        for (m in model.getHotspotList()) {
                             text += m.locName + "_"
                         }
                         Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, text, Toast.LENGTH_LONG).show()
@@ -218,7 +208,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         }
     }
 
-    //TODO: fix dark mode switch and map
+    //TODO: adding uiMode in manifest breaks dark mode switching
 //    override fun onConfigurationChanged(newConfig: Configuration) {
 //        super.onConfigurationChanged(newConfig)
 //        if (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {

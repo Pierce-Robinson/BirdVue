@@ -72,24 +72,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
-        //Reuse fragments
-        //https://stackoverflow.com/questions/42795611/fragmenttransaction-hide-show-doesnt-work-sometimes/51909216#51909216
-        //user answered
-        //https://stackoverflow.com/users/3433252/dtunctuncer
-        //accessed 16 October 2023
-        supportFragmentManager.beginTransaction().apply {
-            if (fragment.isAdded) {
-                show(fragment)
-            } else {
-                add(R.id.frame_container, fragment)
-            }
-
-            supportFragmentManager.fragments.forEach {
-                if (it != fragment && it.isAdded) {
-                    hide(it)
-                }
-            }
-        }.commit()
+        supportFragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit()
     }
 
 }
