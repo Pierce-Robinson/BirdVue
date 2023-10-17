@@ -5,15 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.ObservationsFragment">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Observations Fragment" />
-    <!--progress bar for loading indicator-->
+        android:layout_height="match_parent" />
+
+    <!--progress bar for loading indicator
     <ProgressBar
         android:id="@+id/idPBLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"/>-->
 
 </FrameLayout>

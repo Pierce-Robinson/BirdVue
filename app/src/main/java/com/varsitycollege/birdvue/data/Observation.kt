@@ -6,10 +6,10 @@ data class Observation(
     val date: String ?= null,
     val photo: String ?= null,
     val details: String ?= null,
-    val lat: Number ?= null,
-    val lng: Number ?= null,
+    val lat: Double ?= null,
+    val lng: Double ?= null,
     val location: String ?= null,
-    val likes: Number ?= null,
+    val likes: Int ?= null,
     val comments: List<Comment> ?= null,
     val userId: String ?= null
 )
