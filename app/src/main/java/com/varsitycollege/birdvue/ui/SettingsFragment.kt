@@ -14,6 +14,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.varsitycollege.birdvue.LoginActivity
 import com.varsitycollege.birdvue.databinding.FragmentSettingsBinding
+import com.google.android.material.checkbox.MaterialCheckBox
 
 class SettingsFragment : Fragment() {
 
@@ -21,6 +22,7 @@ class SettingsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var ref: DatabaseReference
+    private lateinit var metricUnitsCheckbox: MaterialCheckBox
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -30,6 +32,15 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+
+        // liam referenced the database
+        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+
+        // Initialize checkbox reference
+        metricUnitsCheckbox = binding.metricUnitsCheckbox
+
+        // Set the default state to Metric units by default
+        metricUnitsCheckbox.isChecked = true
 
         //Handle sign out
         binding.logoutButton.setOnClickListener {
@@ -43,6 +54,17 @@ class SettingsFragment : Fragment() {
         //Handle delete account
         binding.deleteAccountButton.setOnClickListener {
             deleteAccount()
+        }
+
+        // Add an OnCheckedChangeListener to the checkbox
+        metricUnitsCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // User selected Metric units
+                updateFirebaseSetting("metric")
+            } else {
+                // User selected Imperial units
+                updateFirebaseSetting("imperial")
+            }
         }
 
         return binding.root
@@ -72,12 +94,12 @@ class SettingsFragment : Fragment() {
                 auth = FirebaseAuth.getInstance()
                 try {
                     val id = auth.currentUser?.uid
-                    //Delete user's object (Before account deletion to retain permissions
+                    // Delete user's object (Before account deletion to retain permissions
                     database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
                     ref = database.getReference("users")
                     if (id != null) {
                         ref.child(id).removeValue().addOnSuccessListener {
-                            //On object deletion success, delete user account and return to login screen
+                            // On object deletion success, delete user account and return to the login screen
                             auth.currentUser?.delete()?.addOnSuccessListener {
                                 activity?.let {
                                     val intent = Intent(it, LoginActivity::class.java)
@@ -105,9 +127,9 @@ class SettingsFragment : Fragment() {
             .setNegativeButton("No", null)
             .show()
     }
+
+    //todo: daniel you can check here please <3
+    private fun updateFirebaseSetting(units: String) {
+        database.reference.child("distance_units").setValue(units)
+    }
 }
-
-
-
-
-
