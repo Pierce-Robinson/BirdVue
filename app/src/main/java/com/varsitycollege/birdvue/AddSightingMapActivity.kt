@@ -79,14 +79,16 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 //On submit, upload image then observation
                 binding.overviewSubmitButton.setOnClickListener {
                     if (uri != null) {
-                        binding.overviewSubmitButton.isEnabled = false
-                        showLoadingOverlay()
-                        loadingIndicator.visibility = android.view.View.VISIBLE
-
-                        downloadStaticMap(uri)
-
-
+                        if (binding.birdNameFieldEditText.text.toString().isBlank()) {
+                            Toast.makeText(applicationContext, "Please specify a bird name", Toast.LENGTH_LONG).show()
+                        } else {
+                            binding.overviewSubmitButton.isEnabled = false
+                            showLoadingOverlay()
+                            loadingIndicator.visibility = android.view.View.VISIBLE
+                            downloadStaticMap(uri)
+                        }
                     } else {
+                        Toast.makeText(applicationContext, "Please select a photo", Toast.LENGTH_LONG).show()
                         Log.d("PhotoPicker", "No media selected")
                     }
                 }
