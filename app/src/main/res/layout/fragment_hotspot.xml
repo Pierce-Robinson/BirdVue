@@ -34,6 +34,16 @@
             android:background="@drawable/drag_handle"
             android:contentDescription="Drag Handle" />
 
+        <TextView
+            android:id="@+id/distanceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="..."
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:textColor="?colorSecondary"
+            android:textSize="20sp"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hotspot_recycler"
             android:layout_width="match_parent"

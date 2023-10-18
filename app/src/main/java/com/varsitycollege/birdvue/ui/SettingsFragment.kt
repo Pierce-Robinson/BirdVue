@@ -27,8 +27,6 @@ class SettingsFragment : Fragment() {
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
     private lateinit var ref: DatabaseReference
-    private lateinit var metricUnitsCheckbox: MaterialCheckBox
-    private lateinit var maxDistanceEditText: EditText
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -37,18 +35,11 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Reference the database
+        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
-        // liam referenced the database
-        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
-
-        // Initialize checkbox reference
-        metricUnitsCheckbox = binding.metricUnitsCheckbox
-
-        // TODO Liam: change this to fetch the boolean value from the user's firebase object (see method below)
-        metricUnitsCheckbox.isChecked = true
-
-
+        getUserData()
 
         //Handle sign out
         binding.logoutButton.setOnClickListener {
@@ -58,15 +49,14 @@ class SettingsFragment : Fragment() {
                 logOut()
             }
         }
-    // Handle the update max distance
+        // Handle the update max distance
         binding.updateMaxDistanceButton.setOnClickListener {
             val maxDistanceText = binding.maxDistanceEditText.text.toString()
-            if (maxDistanceText.isNotBlank()) {
+            if (maxDistanceText.isNotBlank() && maxDistanceText.toInt() != 0) {
                 val maxDistanceValue = maxDistanceText.toInt()
-                // store the input into a variable and then return the method here
                 updateMaxDistance(maxDistanceValue)
             } else {
-                Toast.makeText(requireContext(), "Please enter a valid value", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -77,7 +67,7 @@ class SettingsFragment : Fragment() {
         }
 
         // Add an OnCheckedChangeListener to the checkbox
-        metricUnitsCheckbox.setOnCheckedChangeListener { _, isChecked ->
+        binding.metricUnitsCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // User selected Metric units
                 updateMetricUnits(true)
@@ -115,7 +105,6 @@ class SettingsFragment : Fragment() {
                 try {
                     val id = auth.currentUser?.uid
                     // Delete user's object (Before account deletion to retain permissions
-                    database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
                     ref = database.getReference("users")
                     if (id != null) {
                         ref.child(id).removeValue().addOnSuccessListener {
@@ -152,7 +141,6 @@ class SettingsFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         try {
             val id = auth.currentUser?.uid
-            database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
             ref = database.getReference("users")
             if (id != null) {
                 ref.child(id).child("metricUnits").setValue(metric)
@@ -171,7 +159,6 @@ class SettingsFragment : Fragment() {
         auth = FirebaseAuth.getInstance()
         try {
             val id = auth.currentUser?.uid
-            database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
             ref = database.getReference("users")
             if (id != null) {
 
@@ -186,16 +173,13 @@ class SettingsFragment : Fragment() {
         }
     }
 
-
-    //TODO: And these
-    //This should fetch and return the max distance from the user's object and update the value in the maxDistanceEditText when the fragment is displayed
-    private fun getMaxDistance(): Int {
+    //Fetch and return the max distance from the user's object and update the value in the maxDistanceEditText when the fragment is displayed
+    private fun getUserData() {
         auth = FirebaseAuth.getInstance()
         val id = auth.currentUser?.uid
 
         if (id != null) {
-            database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
-            ref = database.getReference("users").child(id).child("maxDistance")
+            ref = database.getReference("users").child(id)
 
             // Add a ValueEventListener to get the maxDistance value
             // Link: https://stackoverflow.com/questions/42986449/firebase-value-event-listener
@@ -203,15 +187,21 @@ class SettingsFragment : Fragment() {
             ref.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        val maxDistance = dataSnapshot.getValue(Int::class.java)
+                        val maxDistance = dataSnapshot.child("maxDistance").getValue(Int::class.java)
+                        val metricUnits = dataSnapshot.child("metricUnits").getValue(Boolean::class.java)
                         if (maxDistance != null) {
                             val maxDistanceText = maxDistance.toString()
                             val editableMaxDistance = Editable.Factory.getInstance().newEditable(maxDistanceText)
-                            maxDistanceEditText.text = editableMaxDistance
+                            if (_binding != null) {
+                                binding.maxDistanceEditText.text = editableMaxDistance
+                            }
                         }
-
+                        if (metricUnits != null) {
+                            if (_binding != null) {
+                                binding.metricUnitsCheckbox.isChecked = metricUnits
+                            }
+                        }
                     }
-
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -221,13 +211,6 @@ class SettingsFragment : Fragment() {
                 }
             })
         }
-        return 0
     }
 
-
-    //this should fetch the boolean value from the user's firebase object and update the checkbox when the fragment is displayed
-    private fun getMetricUnits(): Boolean {
-
-        return true
-    }
 }

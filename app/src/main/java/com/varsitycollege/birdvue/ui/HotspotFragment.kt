@@ -154,13 +154,19 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         if (model.hotspotList.value != null) {
             //Get hotspots from viewmodel
             val hotspotData = model.hotspotList.value
-            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from viewmodel", Toast.LENGTH_LONG).show()
             Log.i("Get Hotspot", "Get Hotspot from viewmodel")
-            //TODO: Remember to set saved hotspot list to null again if user changes distance
             //Add hotspot to recycler view
             val hotspotAdapter = HotspotAdapter(hotspotData!!)
             binding.hotspotRecycler.adapter = hotspotAdapter
             binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
+            //Update distance text view
+            if (_binding != null) {
+                if (model.metric.value == true) {
+                    binding.distanceTextView.text = "Showing hotspots within ${model.currentDistance.value} km"
+                } else {
+                    binding.distanceTextView.text = "Showing hotspots within ${model.currentDistance.value} miles"
+                }
+            }
             for (h in hotspotData) {
                 //Add hotspot to map
                 if (h.lat != null && h.lng != null) {
@@ -197,12 +203,18 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                 //Convert to imperial if needed, then fetch hotspots from API
                                 if (metric != null && !metric) {
                                     distance = convertToImperial(distance)
-                                    Toast.makeText(
-                                        this@HotspotFragment.requireActivity().applicationContext,
-                                        "Converted to imperial",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    if (_binding != null) {
+                                        binding.distanceTextView.text = "Showing hotspots within $distance miles"
+                                    }
+                                    model.metric.value = false
+                                    Log.i("Distance conversion", "Converted to imperial")
+                                } else {
+                                    if (_binding != null) {
+                                        binding.distanceTextView.text = "Showing hotspots within $distance km"
+                                    }
+                                    model.metric.value = true
                                 }
+                                model.currentDistance.value = distance
                                 fetchHotspots(distance)
                             }
                         }
@@ -214,11 +226,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 })
             }
         } catch (e: Exception) {
-            Toast.makeText(
-                this@HotspotFragment.requireActivity().applicationContext,
-                e.localizedMessage,
-                Toast.LENGTH_LONG
-            ).show()
+            Log.e("User distance error", "" + e.localizedMessage)
         }
     }
 

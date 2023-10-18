@@ -15,8 +15,12 @@ class HomeViewModel : ViewModel() {
         MutableLiveData<List<Hotspot>>()
     }
 
-    val currentDistance: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>()
+    val currentDistance: MutableLiveData<Double> by lazy {
+        MutableLiveData<Double>()
+    }
+
+    val metric: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
     }
 
     fun setCurrentFragment(fragment: Fragment) {
