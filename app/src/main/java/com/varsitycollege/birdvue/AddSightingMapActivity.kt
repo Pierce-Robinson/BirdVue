@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -47,8 +49,9 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     private lateinit var userLocation: LatLng
     private lateinit var selectedLocation: LatLng
 
+    private lateinit var overlayLayout: RelativeLayout
     private var uriMap: Uri? = null
-
+    private lateinit var loadingIndicator: ProgressBar
     private var downloadUrl: String? = null
     private var downloadUrlMap: String? = null
 
@@ -59,6 +62,8 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
 
         configureMap()
 
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        overlayLayout = findViewById(R.id.overlayLayout)
 
 //        binding.statMap.setOnClickListener{
 //            downloadStaticMap()
@@ -75,6 +80,9 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 binding.overviewSubmitButton.setOnClickListener {
                     if (uri != null) {
                         binding.overviewSubmitButton.isEnabled = false
+                        showLoadingOverlay()
+                        loadingIndicator.visibility = android.view.View.VISIBLE
+
                         downloadStaticMap(uri)
 
 
@@ -203,6 +211,8 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                         downloadUrl = uri.toString()
                         //Upload observation after getting the download URL
                         submitObservation()
+                        hideLoadingOverlay()
+                        loadingIndicator.visibility = android.view.View.GONE
                     } else {
                         // Image upload failed
                         Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
@@ -241,6 +251,7 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
             // accessed: 13 October 2023
             ref.child(key).setValue(observation).addOnSuccessListener {
                 binding.overviewSubmitButton.isEnabled = true
+
                 Toast.makeText(
                     applicationContext,
                     "Observation was added successfully.",
@@ -249,15 +260,21 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 //Go back to the home page
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+                loadingIndicator.visibility = android.view.View.GONE
+                hideLoadingOverlay()
             }.addOnFailureListener { e ->
                 Toast.makeText(
                     applicationContext,
                     "Error: ${e.message}",
                     Toast.LENGTH_LONG
                 ).show()
+                loadingIndicator.visibility = android.view.View.GONE
+                hideLoadingOverlay()
             }
         } catch (e: Exception) {
             Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
+            loadingIndicator.visibility = android.view.View.GONE
+            hideLoadingOverlay()
         }
     }
 
@@ -270,12 +287,14 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
         format: String
     ): String? {
         return withContext(Dispatchers.IO) {
+            val marker = "markers=size:mid%7Ccolor:red%7Clabel:A%7C$center"
             val url = "https://maps.googleapis.com/maps/api/staticmap?" +
                     "center=$center&" +
                     "zoom=$zoom&" +
                     "size=$size&" +
                     "scale=$scale&" +
                     "format=$format&" +
+                    "$marker&" +
                     "key=$apiKey"
             Log.d("StaticMapImage", "URL: $url") // Print the URL to logcat
             val imageUrl = URL(url)
@@ -292,7 +311,7 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
         val apiKey = GOOGLE_MAPS_API_KEY
         val center =
             "${selectedLocation.latitude},${selectedLocation.longitude}" // Latitude,Longitude
-        val zoom = 13
+        val zoom = 18
         val size = "640x480"
         val scale = 2
         val format = "png"
@@ -304,6 +323,12 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
             }
             uploadImage(imageUri)
         }
+    }
+    private fun showLoadingOverlay() {
+        overlayLayout.visibility = android.view.View.VISIBLE
+    }
 
+    private fun hideLoadingOverlay() {
+        overlayLayout.visibility = android.view.View.GONE
     }
 }

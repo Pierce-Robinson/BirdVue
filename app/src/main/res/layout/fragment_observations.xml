@@ -11,11 +11,15 @@
         android:layout_height="match_parent"
         android:paddingBottom="80dp"/>
 
-    <!--progress bar for loading indicator
-    <ProgressBar
-        android:id="@+id/idPBLoading"
+    <TextView
+        android:id="@+id/noItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>-->
+        android:paddingTop="80dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:text="You Have No Observations Yet"
+        android:textAlignment="center"
+        android:textSize="42sp" />
 
 </FrameLayout>

@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.R
+import com.varsitycollege.birdvue.data.ImagePagerAdapter
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.data.ObservationAdapter
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
