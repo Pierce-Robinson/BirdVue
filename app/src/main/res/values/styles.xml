@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+    </style>
     <!-- Rounded image view
     https://stackoverflow.com/questions/66138001/imageview-with-only-bottom-or-top-corners-rounded/66138444#66138444
     user answered
@@ -11,6 +14,11 @@
         <item name="cornerSizeBottomLeft">15dp</item>
         <item name="cornerSizeBottomRight">15dp</item>
         <item name="cornerFamily">rounded</item>
+    </style>
+
+    <style name="MyDatePicker">
+        <item name="android:textColorPrimary">?attr/colorSecondary</item>
+        <item name="colorControlNormal">?attr/colorSecondary</item>
     </style>
 
 </resources>

@@ -1,8 +1,10 @@
 package com.varsitycollege.birdvue
 
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -14,7 +16,6 @@ import com.varsitycollege.birdvue.ui.ObservationsFragment
 import com.varsitycollege.birdvue.ui.SettingsFragment
 
 class HomeActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityHomeBinding
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var model: HomeViewModel

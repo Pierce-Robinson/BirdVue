@@ -6,9 +6,12 @@
     tools:context=".ui.CommunityFragment"
     android:background="?colorSecondaryContainer">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hotspot_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Community Fragment" />
+        android:layout_height="wrap_content"
+        android:elevation="2dp"
+        android:background="@color/md_theme_light_primary"
+        tools:listitem="@layout/hotspot_item"/>
 
 </FrameLayout>

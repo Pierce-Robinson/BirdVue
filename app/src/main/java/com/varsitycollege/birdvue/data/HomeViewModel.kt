@@ -1,12 +1,23 @@
 package com.varsitycollege.birdvue.data
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class HomeViewModel : ViewModel() {
 
     private val currentFragment = MutableLiveData<Fragment>()
+
+    //https://developer.android.com/topic/libraries/architecture/livedata
+    //Accessed 18 October 2023
+    val hotspotList: MutableLiveData<List<Hotspot>> by lazy {
+        MutableLiveData<List<Hotspot>>()
+    }
+
+    val currentDistance: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
 
     fun setCurrentFragment(fragment: Fragment) {
         currentFragment.value = fragment

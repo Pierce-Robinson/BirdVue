@@ -9,5 +9,5 @@ interface EBirdAPI{
     //Base URL: https://api.ebird.org/v2/
     //Get nearby hotspots
     @GET("ref/hotspot/geo")
-    fun getHotspots(@Query("lat") lat: Number, @Query("lng") lng: Number, @Query("fmt") fmt: String, @Query("dst") dst: Number, @Query("key") key: String): Call<List<Hotspot>>
+    fun getHotspots(@Query("lat") lat: Double, @Query("lng") lng: Double, @Query("fmt") fmt: String, @Query("dist") dist: Double, @Query("key") key: String): Call<List<Hotspot>>
 }
