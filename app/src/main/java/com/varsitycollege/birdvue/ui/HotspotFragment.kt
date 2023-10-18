@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
@@ -41,7 +44,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     private var googleMap: GoogleMap? = null
     private var _binding: FragmentHotspotBinding? = null
     private lateinit var userLocation: LatLng
-    private lateinit var model: HomeViewModel
+    private val model: HomeViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -50,12 +53,17 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         // Inflate the layout for this fragment
         _binding = FragmentHotspotBinding.inflate(inflater, container, false)
 
-        //Initialize viewModel
-        model = ViewModelProvider(this)[HomeViewModel::class.java]
+        //Observe viewModel
+        //https://developer.android.com/topic/libraries/architecture/livedata
+        //Accessed 18 October 2023
+
+        val hotspotObserver = Observer<List<Hotspot>> {
+            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "viewmodel updated", Toast.LENGTH_LONG).show()
+        }
+        //model.hotspotList.observe(viewLifecycleOwner, hotspotObserver)
 
         //Bottom drawer
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomNavigationContainer)
@@ -136,15 +144,14 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     }
 
     private fun getHotspotData() {
-        //TODO: BUG This is always empty at the moment
-        if (model.getHotspotList().isNotEmpty()) {
+        if (model.hotspotList.value != null) {
             //Get hotspots from viewmodel
-            Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from viewmodel", Toast.LENGTH_LONG).show()
+            val hotspotData = model.hotspotList.value
+            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from viewmodel", Toast.LENGTH_LONG).show()
             Log.i("Get Hotspot", "Get Hotspot from viewmodel")
             //TODO: Remember to set saved hotspot list to null again if user changes distance
-            val hotspotData = model.getHotspotList()
             //Add hotspot to recycler view
-            val hotspotAdapter = HotspotAdapter(hotspotData)
+            val hotspotAdapter = HotspotAdapter(hotspotData!!)
             binding.hotspotRecycler.adapter = hotspotAdapter
             binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
             for (h in hotspotData) {
@@ -158,10 +165,9 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     )
                 }
-
             }
         } else {
-            Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
+            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
             //Call eBird api to fetch hotspot data
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.ebird.org/v2/")
@@ -172,15 +178,15 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
             //TODO: Change distance to user's selected setting
             api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
                 override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
-                    val hotspotData = response.body()
-                    if (hotspotData != null) {
+                    val hotspots = response.body()
+                    if (hotspots != null) {
                         //Update viewmodel list
-                        model.updateHotspotList(hotspotData)
+                        model.hotspotList.value = hotspots
                         //Add hotspot to recycler view
-                        val hotspotAdapter = HotspotAdapter(hotspotData)
+                        val hotspotAdapter = HotspotAdapter(hotspots)
                         binding.hotspotRecycler.adapter = hotspotAdapter
                         binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
-                        for (h in hotspotData) {
+                        for (h in hotspots) {
                             //Add hotspot to map
                             if (h.lat != null && h.lng != null) {
                                 val pos = LatLng(h.lat, h.lng)
@@ -192,11 +198,6 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                 )
                             }
                         }
-                        var text = ""
-                        for (m in model.getHotspotList()) {
-                            text += m.locName + "_"
-                        }
-                        Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, text, Toast.LENGTH_LONG).show()
                     }
                 }
 
