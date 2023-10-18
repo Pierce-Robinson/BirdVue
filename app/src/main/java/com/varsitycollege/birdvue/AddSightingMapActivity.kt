@@ -23,8 +23,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.core.view.View
 import com.google.firebase.storage.FirebaseStorage
+import com.varsitycollege.birdvue.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
 
 class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
@@ -34,7 +41,10 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     private lateinit var userLocation: LatLng
     private lateinit var selectedLocation: LatLng
 
+    private var uriMap: Uri? = null
+
     private var downloadUrl: String? = null
+    private var downloadUrlMap: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +61,14 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 // this callback is invoked after they choose an image or close the photo picker
                 //Set the image of the UI imageview
                 binding.openGalleryButton.setImageURI(uri)
-
                 //On submit, upload image then observation
                 binding.overviewSubmitButton.setOnClickListener {
                     if (uri != null) {
                         binding.overviewSubmitButton.isEnabled = false
+
                         uploadImage(uri)
+                        //TODO broken
+                        //uploadImageMap(uriMap)
                     } else {
                         Log.d("PhotoPicker", "No media selected")
                     }
@@ -71,7 +83,8 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     }
 
     private fun configureMap() {
-        val supportMapFragment = supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        val supportMapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         supportMapFragment.getMapAsync(this)
         // Async map
         supportMapFragment.getMapAsync(OnMapReadyCallback { googleMap ->
@@ -115,7 +128,12 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                     location?.let {
                         userLocation = LatLng(it.latitude, it.longitude)
                         selectedLocation = userLocation
-                        googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
+                        googleMap?.animateCamera(
+                            CameraUpdateFactory.newLatLngZoom(
+                                userLocation,
+                                15f
+                            )
+                        )
                     }
                 }
         } else {
@@ -203,7 +221,7 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 details = binding.detailsFieldEditText.text.toString(),
                 lat = selectedLocation.latitude,
                 lng = selectedLocation.longitude,
-                location = "Your Location",
+                location = downloadUrlMap,
                 likes = 0, // ahd to put something here because of the data class
                 comments = emptyList(), // theres no comments for now i know
                 userId = FirebaseAuth.getInstance().currentUser!!.uid
@@ -231,6 +249,75 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
             }
         } catch (e: Exception) {
             Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun saveStaticMapImage(
+        apiKey: String,
+        center: String,
+        zoom: Int,
+        size: String,
+        scale: Int,
+        format: String,
+        filePath: String
+    ): Uri? {
+        val url = "https://maps.googleapis.com/maps/api/staticmap?" +
+                "center=$center&" +
+                "zoom=$zoom&" +
+                "size=$size&" +
+                "scale=$scale&" +
+                "format=$format&" +
+                "key=$apiKey"
+
+        val imageUrl = URL(url)
+        val imageStream = imageUrl.openStream()
+        val output = FileOutputStream(filePath)
+
+        imageStream.use { input ->
+            output.use { fileOut ->
+                input.copyTo(fileOut)
+            }
+        }
+        return Uri.fromFile(File(filePath))
+    }
+
+    private fun uploadImageMap(imageUri: Uri?) {
+        val apiKey = "$GOOGLE_MAPS_API_KEY"
+        val center =
+            "${selectedLocation.latitude},${selectedLocation.longitude}" // Latitude,Longitude
+        val zoom = 13
+        val size = "640x480"
+        val scale = 2
+        val format = "png"
+        val filePath = "photoMap_${System.currentTimeMillis()}"
+        uriMap = saveStaticMapImage(apiKey, center, zoom, size, scale, format, filePath)
+
+        // Generate a file name based on current time in milliseconds
+        val fileName = "photo_${System.currentTimeMillis()}"
+        // Get a reference to the Firebase Storage
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/")
+        // Create a reference to the file location in Firebase Storage
+        val imageRef = storageRef.child(fileName)
+
+        val uploadTask = imageRef.putFile(imageUri!!)
+        uploadTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+                // Image upload successful
+                imageRef.downloadUrl.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val uri = task.result
+                        downloadUrl = uri.toString()
+                        //Upload observation after getting the download URL
+                        submitObservation()
+                    } else {
+                        // Image upload failed
+                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+        uploadTask.addOnFailureListener {
+            Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
         }
     }
 }
