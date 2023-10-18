@@ -3,6 +3,7 @@ package com.varsitycollege.birdvue.data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,8 +17,8 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePicture)
         val birdNameField: TextView = itemView.findViewById(R.id.birdNameField)
         val caption: TextView = itemView.findViewById(R.id.caption)
-        val likeButton: ImageButton = itemView.findViewById(R.id.likeButton)
-        val commentButton: ImageButton = itemView.findViewById(R.id.commentButton)
+        val likeButton: Button = itemView.findViewById(R.id.likeButton)
+        val commentButton: Button = itemView.findViewById(R.id.commentButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -28,7 +29,7 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
 
-        // Bind data to views
+        //Bind data to views
         //holder.postImage.setImageResource(post.imageResId)
         //holder.profilePicture.setImageResource(post.profilePictureResId)
         holder.birdNameField.text = post.birdName
