@@ -1,7 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,9 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,8 +32,15 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.data.HomeViewModel
 import com.varsitycollege.birdvue.data.HotspotAdapter
+import java.text.DecimalFormat
 
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
 
@@ -45,6 +49,9 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     private var _binding: FragmentHotspotBinding? = null
     private lateinit var userLocation: LatLng
     private val model: HomeViewModel by activityViewModels()
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -167,17 +174,73 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 }
             }
         } else {
-            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
-            //Call eBird api to fetch hotspot data
-            val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.ebird.org/v2/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
+            getUserDistance()
+        }
+    }
 
-            val api = retrofit.create(EBirdAPI::class.java)
-            //TODO: Change distance to user's selected setting
-            api.getHotspots(userLocation.latitude, userLocation.longitude, "json", 5, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
-                override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+    private fun getUserDistance() {
+        auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+        ref = database.getReference("users")
+        val id = auth.currentUser?.uid
+        try {
+            if (id != null) {
+                ref.child(id).addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            var distance = snapshot.child("maxDistance").getValue(Double::class.java)
+                            val metric = snapshot.child("metricUnits").getValue(Boolean::class.java)
+
+                            if (distance != null) {
+                                //Clear hotspot cache
+                                model.hotspotList.value = null
+                                //Convert to imperial if needed, then fetch hotspots from API
+                                if (metric != null && !metric) {
+                                    distance = convertToImperial(distance)
+                                    Toast.makeText(
+                                        this@HotspotFragment.requireActivity().applicationContext,
+                                        "Converted to imperial",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                fetchHotspots(distance)
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("Database error", error.details)
+                    }
+                })
+            }
+        } catch (e: Exception) {
+            Toast.makeText(
+                this@HotspotFragment.requireActivity().applicationContext,
+                e.localizedMessage,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    private fun convertToImperial(distance: Double): Double {
+        val result = distance * 0.621371
+        val df = DecimalFormat("#.##")
+        return df.format(result).toDouble()
+    }
+
+    private fun fetchHotspots(distance: Double) {
+        //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
+        //Call eBird api to fetch hotspot data
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.ebird.org/v2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(EBirdAPI::class.java)
+        //TODO: Change distance to user's selected setting
+        api.getHotspots(userLocation.latitude, userLocation.longitude, "json", distance, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
+            override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
+                try {
                     val hotspots = response.body()
                     if (hotspots != null) {
                         //Update viewmodel list
@@ -199,14 +262,16 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                             }
                         }
                     }
+                } catch (e: Exception) {
+                    //TODO: handle binding exception
                 }
+            }
 
-                override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
-                    Log.e("API Error", t.toString())
-                }
+            override fun onFailure(call: Call<List<Hotspot>>, t: Throwable) {
+                Log.e("API Error", t.toString())
+            }
 
-            })
-        }
+        })
     }
 
     //TODO: adding uiMode in manifest breaks dark mode switching

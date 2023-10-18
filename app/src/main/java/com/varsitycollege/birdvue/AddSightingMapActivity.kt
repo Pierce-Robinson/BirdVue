@@ -151,7 +151,10 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     }
 
     override fun onMyLocationButtonClick(): Boolean {
-        // Handle the button click here
+        // Reset the selected location to user's location
+        selectedLocation = userLocation
+        // Remove all markers
+        googleMap?.clear()
         return false // Return false to let the default behavior occur
     }
 
