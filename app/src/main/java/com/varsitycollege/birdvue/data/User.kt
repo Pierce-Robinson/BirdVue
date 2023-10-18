@@ -9,6 +9,4 @@ data class User(
     val email: String ?= null,
     val maxDistance: Int ?= null,
     val metricUnits: Boolean ?= null
-
-    //todo: when user checks metric box, display units to user when they click
 )

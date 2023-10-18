@@ -57,13 +57,13 @@ class SettingsFragment : Fragment() {
         }
 
         // Add an OnCheckedChangeListener to the checkbox
-        metricUnitsCheckbox.setOnCheckedChangeListener { buttonView, isChecked ->
+        metricUnitsCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 // User selected Metric units
-                updateFirebaseSetting("metric")
+                updateMetricUnits(true)
             } else {
                 // User selected Imperial units
-                updateFirebaseSetting("imperial")
+                updateMetricUnits(false)
             }
         }
 
@@ -128,8 +128,35 @@ class SettingsFragment : Fragment() {
             .show()
     }
 
-    //todo: daniel you can check here please <3
-    private fun updateFirebaseSetting(units: String) {
-        database.reference.child("distance_units").setValue(units)
+    private fun updateMetricUnits(metric: Boolean) {
+        auth = FirebaseAuth.getInstance()
+        try {
+            val id = auth.currentUser?.uid
+            database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+            ref = database.getReference("users")
+            if (id != null) {
+                ref.child(id).child("metricUnits").setValue(metric)
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                this@SettingsFragment.requireActivity().applicationContext,
+                e.localizedMessage,
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    //TODO: Liam pls implement this :)
+    //Similarly to how updateMetricUnits works. Please add a confirm/update button to ui, and call this when that is pressed, getting the data from the maxDistanceEditText
+    private fun updateMaxDistance(dist: Int) {
+
+    }
+
+    //TODO: And this Liam
+    //This should fetch and return the max distance from the user's object and update the value in the maxDistanceEditText when the fragment is displayed
+    private fun getMaxDistance(): Int {
+
+        return 0
     }
 }
