@@ -44,6 +44,7 @@ class ObservationsFragment : Fragment() {
         observationRecyclerView = binding.recyclerView
         observationArrayList = arrayListOf()
 
+
         observationRecyclerView.layoutManager = LinearLayoutManager(context)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -69,6 +70,15 @@ class ObservationsFragment : Fragment() {
                     }
                     val adapter = ObservationAdapter(observationArrayList)
                     observationRecyclerView.adapter = adapter
+                    if (observationArrayList.isEmpty()) {
+                        if(_binding != null) {
+                            binding.noItems.visibility = View.VISIBLE
+                        }
+                    } else {
+                            if(_binding != null){
+                            binding.noItems.visibility = View.GONE
+                        }
+                    }
                 }
             }
 
