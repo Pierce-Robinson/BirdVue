@@ -22,15 +22,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.core.view.View
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.varsitycollege.birdvue.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.net.URL
 
 class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
@@ -53,6 +59,10 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
 
         configureMap()
 
+
+//        binding.statMap.setOnClickListener{
+//            downloadStaticMap()
+//        }
         // registers a photo picker activity launcher in single select mode.
         // Link: https://developer.android.com/training/data-storage/shared/photopicker
         // accessed: 13 October 2023
@@ -65,10 +75,9 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 binding.overviewSubmitButton.setOnClickListener {
                     if (uri != null) {
                         binding.overviewSubmitButton.isEnabled = false
+                        downloadStaticMap(uri)
 
-                        uploadImage(uri)
-                        //TODO broken
-                        //uploadImageMap(uriMap)
+
                     } else {
                         Log.d("PhotoPicker", "No media selected")
                     }
@@ -252,37 +261,35 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
         }
     }
 
-    fun saveStaticMapImage(
+    private suspend fun uploadStaticMapImage(
         apiKey: String,
         center: String,
         zoom: Int,
         size: String,
         scale: Int,
-        format: String,
-        filePath: String
-    ): Uri? {
-        val url = "https://maps.googleapis.com/maps/api/staticmap?" +
-                "center=$center&" +
-                "zoom=$zoom&" +
-                "size=$size&" +
-                "scale=$scale&" +
-                "format=$format&" +
-                "key=$apiKey"
-
-        val imageUrl = URL(url)
-        val imageStream = imageUrl.openStream()
-        val output = FileOutputStream(filePath)
-
-        imageStream.use { input ->
-            output.use { fileOut ->
-                input.copyTo(fileOut)
-            }
+        format: String
+    ): String? {
+        return withContext(Dispatchers.IO) {
+            val url = "https://maps.googleapis.com/maps/api/staticmap?" +
+                    "center=$center&" +
+                    "zoom=$zoom&" +
+                    "size=$size&" +
+                    "scale=$scale&" +
+                    "format=$format&" +
+                    "key=$apiKey"
+            Log.d("StaticMapImage", "URL: $url") // Print the URL to logcat
+            val imageUrl = URL(url)
+            val imageStream: InputStream = imageUrl.openStream()
+            val fileName = "photo_${System.currentTimeMillis()}"
+            val storageRef = FirebaseStorage.getInstance().reference.child("images/map_images")
+            val mapImageRef = storageRef.child(fileName)
+            val uploadTask = mapImageRef.putStream(imageStream)
+            uploadTask.await() // Wait for the upload task to complete
+            mapImageRef.downloadUrl.await().toString() // Get and return the download URL
         }
-        return Uri.fromFile(File(filePath))
     }
-
-    private fun uploadImageMap(imageUri: Uri?) {
-        val apiKey = "$GOOGLE_MAPS_API_KEY"
+    private fun downloadStaticMap(imageUri: Uri?) {
+        val apiKey = GOOGLE_MAPS_API_KEY
         val center =
             "${selectedLocation.latitude},${selectedLocation.longitude}" // Latitude,Longitude
         val zoom = 13
@@ -290,34 +297,13 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
         val scale = 2
         val format = "png"
         val filePath = "photoMap_${System.currentTimeMillis()}"
-        uriMap = saveStaticMapImage(apiKey, center, zoom, size, scale, format, filePath)
 
-        // Generate a file name based on current time in milliseconds
-        val fileName = "photo_${System.currentTimeMillis()}"
-        // Get a reference to the Firebase Storage
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/")
-        // Create a reference to the file location in Firebase Storage
-        val imageRef = storageRef.child(fileName)
-
-        val uploadTask = imageRef.putFile(imageUri!!)
-        uploadTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                // Image upload successful
-                imageRef.downloadUrl.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val uri = task.result
-                        downloadUrl = uri.toString()
-                        //Upload observation after getting the download URL
-                        submitObservation()
-                    } else {
-                        // Image upload failed
-                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        CoroutineScope(Dispatchers.Main).launch {
+             downloadUrlMap = withContext(Dispatchers.IO) {
+            uploadStaticMapImage(apiKey, center, zoom, size, scale, format)
             }
+            uploadImage(imageUri)
         }
-        uploadTask.addOnFailureListener {
-            Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
-        }
+
     }
 }

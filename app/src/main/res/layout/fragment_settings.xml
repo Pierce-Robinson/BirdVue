@@ -43,8 +43,9 @@
                 android:text="Notifications"
                 android:textSize="18sp" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/notificationsCheckbox"
+                style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
@@ -75,12 +76,15 @@
                 android:text="Metric Units"
                 android:textSize="18sp" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/metricUnitsCheckbox"
+                style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:padding="8dp" /> <!-- Align to the right -->
+                android:padding="8dp"
+
+                /> <!-- Align to the right -->
         </LinearLayout>
 
         <!-- Max Distance Setting -->
