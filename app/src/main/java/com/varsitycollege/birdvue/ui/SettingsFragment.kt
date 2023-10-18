@@ -39,7 +39,7 @@ class SettingsFragment : Fragment() {
         // Initialize checkbox reference
         metricUnitsCheckbox = binding.metricUnitsCheckbox
 
-        // Set the default state to Metric units by default
+        // TODO Liam: change this to fetch the boolean value from the user's firebase object (see method below)
         metricUnitsCheckbox.isChecked = true
 
         //Handle sign out
@@ -153,10 +153,16 @@ class SettingsFragment : Fragment() {
 
     }
 
-    //TODO: And this Liam
+    //TODO: And these
     //This should fetch and return the max distance from the user's object and update the value in the maxDistanceEditText when the fragment is displayed
     private fun getMaxDistance(): Int {
 
         return 0
+    }
+
+    //this should fetch the boolean value from the user's firebase object and update the checkbox when the fragment is displayed
+    private fun getMetricUnits(): Boolean {
+
+        return true
     }
 }
