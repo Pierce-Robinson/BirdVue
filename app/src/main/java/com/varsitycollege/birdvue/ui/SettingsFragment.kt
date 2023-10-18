@@ -52,14 +52,17 @@ class SettingsFragment : Fragment() {
         // Handle the update max distance
         binding.updateMaxDistanceButton.setOnClickListener {
             val maxDistanceText = binding.maxDistanceEditText.text.toString()
-            if (maxDistanceText.isNotBlank() && maxDistanceText.toInt() != 0) {
-                val maxDistanceValue = maxDistanceText.toInt()
-                updateMaxDistance(maxDistanceValue)
-            } else {
-                Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value", Toast.LENGTH_LONG).show()
+            try {
+                if (maxDistanceText.isNotBlank() && maxDistanceText.toInt() > 0 && maxDistanceText.toInt() <= 50) {
+                    val maxDistanceValue = maxDistanceText.toInt()
+                    updateMaxDistance(maxDistanceValue)
+                } else {
+                    Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value (1 - 50)", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value (1 - 50)", Toast.LENGTH_LONG).show()
             }
         }
-
 
         //Handle delete account
         binding.deleteAccountButton.setOnClickListener {
