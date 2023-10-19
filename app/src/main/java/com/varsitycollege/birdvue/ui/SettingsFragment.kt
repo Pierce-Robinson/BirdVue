@@ -3,6 +3,7 @@ package com.varsitycollege.birdvue.ui
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +50,7 @@ class SettingsFragment : Fragment() {
                 logOut()
             }
         }
+
         // Handle the update max distance
         binding.updateMaxDistanceButton.setOnClickListener {
             val maxDistanceText = binding.maxDistanceEditText.text.toString()
@@ -97,16 +99,68 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun deleteAccount() {
-        // this will show a confirmation popup for deletion
+    private fun deleteObservations(id: String?) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Account")
-            .setMessage("Are you sure you want to delete your account?")
+            .setTitle("Delete Observations")
+            .setMessage("Do you also want to delete all your observations?")
             .setPositiveButton("Yes") { _, _ ->
-                // delete the user account
                 auth = FirebaseAuth.getInstance()
                 try {
-                    val id = auth.currentUser?.uid
+                    // Delete user's observations
+                    val query = database.getReference("observations").orderByChild("userId").equalTo(id)
+                    if (id != null) {
+                        query.addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                for (observationSnapshot in dataSnapshot.children) {
+                                    // Delete the observation with the matching user ID
+                                    observationSnapshot.ref.removeValue()
+                                    Log.i("Observation deleted", "${observationSnapshot.key}")
+                                    try {
+                                        // Delete user's object (Before account deletion to retain permissions
+                                        ref = database.getReference("users")
+                                        ref.child(id).removeValue().addOnSuccessListener {
+                                            // On object deletion success, delete user account and return to the login screen
+                                            auth.currentUser?.delete()?.addOnSuccessListener {
+                                                activity?.let {
+                                                    val intent = Intent(it, LoginActivity::class.java)
+                                                    it.startActivity(intent)
+                                                    it.finish() // Finish the current activity after logout
+                                                }
+                                            }
+                                        }.addOnFailureListener {
+                                            Toast.makeText(
+                                                this@SettingsFragment.requireActivity().applicationContext,
+                                                it.localizedMessage,
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    } catch (e: Exception) {
+                                        Toast.makeText(
+                                            this@SettingsFragment.requireActivity().applicationContext,
+                                            "Please login, then try again.",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        logOut()
+                                    }
+                                }
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {
+                                Log.e("Error while deleting observations", "${databaseError.toException()}")
+                            }
+                        })
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@SettingsFragment.requireActivity().applicationContext,
+                        "Please login, then try again.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    logOut()
+                }
+            }
+            .setNegativeButton("No") {_, _ ->
+                try {
                     // Delete user's object (Before account deletion to retain permissions
                     ref = database.getReference("users")
                     if (id != null) {
@@ -127,6 +181,30 @@ class SettingsFragment : Fragment() {
                             ).show()
                         }
                     }
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        this@SettingsFragment.requireActivity().applicationContext,
+                        "Please login, then try again.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    logOut()
+                }
+            }
+            .show()
+    }
+
+    private fun deleteAccount() {
+        // this will show a confirmation popup for deletion
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Account")
+            .setMessage("Are you sure you want to delete your account?")
+            .setPositiveButton("Yes") { _, _ ->
+                // delete the user account
+                auth = FirebaseAuth.getInstance()
+                try {
+                    val id = auth.currentUser?.uid
+                    //Ask user if they also want to delete observations
+                    deleteObservations(id)
                 } catch (e: Exception) {
                     Toast.makeText(
                         this@SettingsFragment.requireActivity().applicationContext,
@@ -208,9 +286,7 @@ class SettingsFragment : Fragment() {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    //any error messages can go here
-                    val errorMessage = "database error: " + databaseError.message
-                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                    Log.e("Database error", "databaseError.message")
                 }
             })
         }
