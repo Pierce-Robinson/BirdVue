@@ -1,5 +1,7 @@
 package com.varsitycollege.birdvue.data
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +10,25 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.varsitycollege.birdvue.LoginActivity
 import com.varsitycollege.birdvue.R
 
 class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapter.PostViewHolder>() {
+
+    private var database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //val postImage: ImageView = itemView.findViewById(R.id.postImage)
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePicture)
@@ -23,6 +37,7 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
         val caption: TextView = itemView.findViewById(R.id.caption)
         val likeButton: Button = itemView.findViewById(R.id.likeButton)
         val commentButton: Button = itemView.findViewById(R.id.commentButton)
+        val deleteButton: Button = itemView.findViewById(R.id.deleteObservation)
         val viewPager: ViewPager2 = itemView.findViewById(R.id.viewPager)
 
     }
@@ -39,13 +54,45 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
         holder.birdNameField.text = post.birdName
         holder.caption.text = post.details
 
-        //Set click listeners for buttons (like, comment)
+        //Set click listeners for buttons (like, comment, delete)
         holder.likeButton.setOnClickListener {
             //Handle like button click
         }
 
         holder.commentButton.setOnClickListener {
             //Handle comment button click
+        }
+
+        holder.deleteButton.setOnClickListener {
+            //Handle delete button click
+            AlertDialog.Builder(holder.itemView.context)
+                .setTitle("Delete Observation")
+                .setMessage("Are you sure you want to delete this observation?")
+                .setPositiveButton("Yes") { _, _ ->
+                    try {
+                        // Delete user's observations
+                        val query = database.getReference("observations").orderByChild("id").equalTo(post.id)
+                        if (post.id != null) {
+                            query.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    for (observationSnapshot in dataSnapshot.children) {
+                                        // Delete the observation with the matching user ID
+                                        observationSnapshot.ref.removeValue()
+                                        Log.i("Observation deleted", "${observationSnapshot.key}")
+                                    }
+                                }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    Log.e("Error while deleting observation", "${databaseError.toException()}")
+                                }
+                            })
+                        }
+                    } catch (e: Exception) {
+                        Log.e("Delete observation exception", "" + e.localizedMessage)
+                    }
+                }
+                    .setNegativeButton("No", null)
+                    .show()
         }
 
         val imageUrls = listOf(post.photo, post.location)
