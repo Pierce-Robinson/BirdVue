@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -114,7 +115,12 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                     location?.let {
                         userLocation = LatLng(it.latitude, it.longitude)
                         //Get hotspot data after user's location is set
-                        getHotspotData()
+                        //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+                        //stops the app crashing before activity is ready
+                        val activity = activity
+                        if (isAdded && activity != null) {
+                            getHotspotData()
+                        }
                         googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                     }
                 }
@@ -139,15 +145,25 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, enable my location
-                enableMyLocation()
+                //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+                //stops the app crashing before activity is ready
+                val activity = activity
+                if (isAdded && activity != null) {
+                    enableMyLocation()
+                }
+
             }
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-
-        enableMyLocation()
+        //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+        //stops the app crashing before activity is ready
+        val activity = activity
+        if (isAdded && activity != null) {
+            enableMyLocation()
+        }
     }
 
     private fun getHotspotData() {

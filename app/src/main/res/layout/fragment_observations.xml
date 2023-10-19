@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?colorSecondaryContainer"
     tools:context=".ui.ObservationsFragment">
 
@@ -12,15 +13,31 @@
         android:layout_height="match_parent"
         android:paddingBottom="80dp"/>
 
-    <TextView
+
+
+    <androidx.cardview.widget.CardView
         android:id="@+id/noItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="80dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
         android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:text="You Have No Observations Yet"
-        android:textAlignment="center"
-        android:textSize="42sp" />
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="?android:colorPrimaryDark"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="?colorSecondary"
+            android:paddingVertical="10dp"
+            android:text="@string/you_have_no_observations"
+            android:textSize="36sp"/>
+
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>
