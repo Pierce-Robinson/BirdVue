@@ -43,8 +43,9 @@
                 android:text="Notifications"
                 android:textSize="18sp" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/notificationsCheckbox"
+                style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
@@ -75,13 +76,15 @@
                 android:text="Metric Units"
                 android:textSize="18sp" />
 
-            <com.google.android.material.checkbox.MaterialCheckBox
+            <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/metricUnitsCheckbox"
+                style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:checked="true"
-                android:padding="8dp" /> <!-- Align to the right -->
+                android:padding="8dp"
+
+                /> <!-- Align to the right -->
         </LinearLayout>
 
         <!-- Max Distance Setting -->
@@ -107,15 +110,54 @@
                 android:text="Max Distance"
                 android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/maxDistanceEditText"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:inputType="number"
-                android:padding="8dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textField"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                app:boxCornerRadiusBottomEnd="18dp"
+                app:boxCornerRadiusBottomStart="18dp"
+                app:boxCornerRadiusTopEnd="18dp"
+                app:boxCornerRadiusTopStart="18dp"
+                app:boxStrokeColor="?colorSecondary"
+                app:boxStrokeWidth="2dp"
+                app:boxBackgroundColor="?colorSecondaryContainer">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/maxDistanceEditText"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:layout_height="wrap_content"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/updateMaxDistanceButton"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:backgroundTint="?attr/colorSecondary"
+                android:text="Update"
+                app:cornerRadius="18dp"
+                android:layout_marginTop="13dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/maxDistanceEditText"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.628"
+                app:strokeWidth="0dp" />
         </LinearLayout>
     </LinearLayout>
+
+
 
     <!-- logout Button -->
     <com.google.android.material.button.MaterialButton
@@ -129,7 +171,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintVertical_bias="0.628"
+        app:layout_constraintVertical_bias="0.68"
         app:strokeWidth="0dp" />
 
     <!-- Delete Account Button -->

@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.R
+import com.varsitycollege.birdvue.data.ImagePagerAdapter
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.data.ObservationAdapter
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
@@ -43,6 +44,7 @@ class ObservationsFragment : Fragment() {
         observationRecyclerView = binding.recyclerView
         observationArrayList = arrayListOf()
 
+
         observationRecyclerView.layoutManager = LinearLayoutManager(context)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
@@ -60,6 +62,8 @@ class ObservationsFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    //Clear old data from array
+                    observationArrayList.clear()
                     for (observationSnapshot in snapshot.children) {
                         val observation = observationSnapshot.getValue(Observation::class.java)
                         if (observation != null && observation.userId == user.uid) {
@@ -68,6 +72,15 @@ class ObservationsFragment : Fragment() {
                     }
                     val adapter = ObservationAdapter(observationArrayList)
                     observationRecyclerView.adapter = adapter
+                    if (observationArrayList.isEmpty()) {
+                        if(_binding != null) {
+                            binding.noItems.visibility = View.VISIBLE
+                        }
+                    } else {
+                            if(_binding != null){
+                            binding.noItems.visibility = View.GONE
+                        }
+                    }
                 }
             }
 

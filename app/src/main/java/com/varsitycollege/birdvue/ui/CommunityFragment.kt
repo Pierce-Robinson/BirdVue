@@ -7,17 +7,26 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.varsitycollege.birdvue.R
-import com.varsitycollege.birdvue.data.Hotspot
-import com.varsitycollege.birdvue.data.HotspotAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.varsitycollege.birdvue.data.Observation
+import com.varsitycollege.birdvue.data.ObservationAdapterCom
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
-import com.varsitycollege.birdvue.databinding.FragmentHotspotBinding
 
 class CommunityFragment : Fragment() {
 
     private var _binding: FragmentCommunityBinding? = null
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var hotspotData: List<Hotspot>
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var ref: DatabaseReference
+    private lateinit var observationComArrayList: ArrayList<Observation>
+    private lateinit var observationComRecyclerView: RecyclerView
+
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -28,8 +37,52 @@ class CommunityFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentCommunityBinding.inflate(inflater, container, false)
+        observationComRecyclerView = binding.recyclerViewCom
+        observationComArrayList = arrayListOf()
 
+
+        observationComRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            getData(currentUser)
+        }
         return binding.root
+    }
+
+    private fun getData(user: FirebaseUser) {
+        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+        ref = database.getReference("observations")
+
+        ref.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    //Clear old data from array
+                    observationComArrayList.clear()
+                    for (observationSnapshot in snapshot.children) {
+                        val observation = observationSnapshot.getValue(Observation::class.java)
+                        if (observation != null) {
+                            observationComArrayList.add(observation)
+                        }
+                    }
+                    val adapter = ObservationAdapterCom(observationComArrayList)
+                    observationComRecyclerView.adapter = adapter
+                    if (observationComArrayList.isEmpty()) {
+                        if(_binding != null) {
+                            binding.noItems.visibility = View.VISIBLE
+                        }
+                    } else {
+                        if(_binding != null){
+                            binding.noItems.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+            }
+        })
     }
 
     override fun onDestroyView() {

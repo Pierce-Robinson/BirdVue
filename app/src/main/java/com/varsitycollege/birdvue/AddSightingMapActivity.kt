@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,15 +24,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.core.view.View
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 import com.varsitycollege.birdvue.BuildConfig.GOOGLE_MAPS_API_KEY
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.databinding.ActivityAddSightingMapBinding
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.net.URL
 
 class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
@@ -41,8 +49,9 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
     private lateinit var userLocation: LatLng
     private lateinit var selectedLocation: LatLng
 
+    private lateinit var overlayLayout: RelativeLayout
     private var uriMap: Uri? = null
-
+    private lateinit var loadingIndicator: ProgressBar
     private var downloadUrl: String? = null
     private var downloadUrlMap: String? = null
 
@@ -53,6 +62,12 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
 
         configureMap()
 
+        loadingIndicator = findViewById(R.id.loadingIndicator)
+        overlayLayout = findViewById(R.id.overlayLayout)
+
+//        binding.statMap.setOnClickListener{
+//            downloadStaticMap()
+//        }
         // registers a photo picker activity launcher in single select mode.
         // Link: https://developer.android.com/training/data-storage/shared/photopicker
         // accessed: 13 October 2023
@@ -64,12 +79,16 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 //On submit, upload image then observation
                 binding.overviewSubmitButton.setOnClickListener {
                     if (uri != null) {
-                        binding.overviewSubmitButton.isEnabled = false
-
-                        uploadImage(uri)
-                        //TODO broken
-                        //uploadImageMap(uriMap)
+                        if (binding.birdNameFieldEditText.text.toString().isBlank()) {
+                            Toast.makeText(applicationContext, "Please specify a bird name", Toast.LENGTH_LONG).show()
+                        } else {
+                            binding.overviewSubmitButton.isEnabled = false
+                            showLoadingOverlay()
+                            loadingIndicator.visibility = android.view.View.VISIBLE
+                            downloadStaticMap(uri)
+                        }
                     } else {
+                        Toast.makeText(applicationContext, "Please select a photo", Toast.LENGTH_LONG).show()
                         Log.d("PhotoPicker", "No media selected")
                     }
                 }
@@ -194,6 +213,8 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                         downloadUrl = uri.toString()
                         //Upload observation after getting the download URL
                         submitObservation()
+                        hideLoadingOverlay()
+                        loadingIndicator.visibility = android.view.View.GONE
                     } else {
                         // Image upload failed
                         Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
@@ -232,6 +253,7 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
             // accessed: 13 October 2023
             ref.child(key).setValue(observation).addOnSuccessListener {
                 binding.overviewSubmitButton.isEnabled = true
+
                 Toast.makeText(
                     applicationContext,
                     "Observation was added successfully.",
@@ -240,84 +262,75 @@ class AddSightingMapActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMa
                 //Go back to the home page
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
+                loadingIndicator.visibility = android.view.View.GONE
+                hideLoadingOverlay()
             }.addOnFailureListener { e ->
                 Toast.makeText(
                     applicationContext,
                     "Error: ${e.message}",
                     Toast.LENGTH_LONG
                 ).show()
+                loadingIndicator.visibility = android.view.View.GONE
+                hideLoadingOverlay()
             }
         } catch (e: Exception) {
             Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_LONG).show()
+            loadingIndicator.visibility = android.view.View.GONE
+            hideLoadingOverlay()
         }
     }
 
-    fun saveStaticMapImage(
+    private suspend fun uploadStaticMapImage(
         apiKey: String,
         center: String,
         zoom: Int,
         size: String,
         scale: Int,
-        format: String,
-        filePath: String
-    ): Uri? {
-        val url = "https://maps.googleapis.com/maps/api/staticmap?" +
-                "center=$center&" +
-                "zoom=$zoom&" +
-                "size=$size&" +
-                "scale=$scale&" +
-                "format=$format&" +
-                "key=$apiKey"
-
-        val imageUrl = URL(url)
-        val imageStream = imageUrl.openStream()
-        val output = FileOutputStream(filePath)
-
-        imageStream.use { input ->
-            output.use { fileOut ->
-                input.copyTo(fileOut)
-            }
+        format: String
+    ): String? {
+        return withContext(Dispatchers.IO) {
+            val marker = "markers=size:mid%7Ccolor:red%7Clabel:A%7C$center"
+            val url = "https://maps.googleapis.com/maps/api/staticmap?" +
+                    "center=$center&" +
+                    "zoom=$zoom&" +
+                    "size=$size&" +
+                    "scale=$scale&" +
+                    "format=$format&" +
+                    "$marker&" +
+                    "key=$apiKey"
+            Log.d("StaticMapImage", "URL: $url") // Print the URL to logcat
+            val imageUrl = URL(url)
+            val imageStream: InputStream = imageUrl.openStream()
+            val fileName = "photo_${System.currentTimeMillis()}"
+            val storageRef = FirebaseStorage.getInstance().reference.child("images/map_images")
+            val mapImageRef = storageRef.child(fileName)
+            val uploadTask = mapImageRef.putStream(imageStream)
+            uploadTask.await() // Wait for the upload task to complete
+            mapImageRef.downloadUrl.await().toString() // Get and return the download URL
         }
-        return Uri.fromFile(File(filePath))
     }
-
-    private fun uploadImageMap(imageUri: Uri?) {
-        val apiKey = "$GOOGLE_MAPS_API_KEY"
+    private fun downloadStaticMap(imageUri: Uri?) {
+        val apiKey = GOOGLE_MAPS_API_KEY
         val center =
             "${selectedLocation.latitude},${selectedLocation.longitude}" // Latitude,Longitude
-        val zoom = 13
+        val zoom = 18
         val size = "640x480"
         val scale = 2
         val format = "png"
         val filePath = "photoMap_${System.currentTimeMillis()}"
-        uriMap = saveStaticMapImage(apiKey, center, zoom, size, scale, format, filePath)
 
-        // Generate a file name based on current time in milliseconds
-        val fileName = "photo_${System.currentTimeMillis()}"
-        // Get a reference to the Firebase Storage
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/")
-        // Create a reference to the file location in Firebase Storage
-        val imageRef = storageRef.child(fileName)
-
-        val uploadTask = imageRef.putFile(imageUri!!)
-        uploadTask.addOnCompleteListener {
-            if (it.isSuccessful) {
-                // Image upload successful
-                imageRef.downloadUrl.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val uri = task.result
-                        downloadUrl = uri.toString()
-                        //Upload observation after getting the download URL
-                        submitObservation()
-                    } else {
-                        // Image upload failed
-                        Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        CoroutineScope(Dispatchers.Main).launch {
+             downloadUrlMap = withContext(Dispatchers.IO) {
+            uploadStaticMapImage(apiKey, center, zoom, size, scale, format)
             }
+            uploadImage(imageUri)
         }
-        uploadTask.addOnFailureListener {
-            Toast.makeText(applicationContext, it.localizedMessage, Toast.LENGTH_LONG).show()
-        }
+    }
+    private fun showLoadingOverlay() {
+        overlayLayout.visibility = android.view.View.VISIBLE
+    }
+
+    private fun hideLoadingOverlay() {
+        overlayLayout.visibility = android.view.View.GONE
     }
 }

@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconSize="35dp"
+        app:itemIconSize="30dp"
         app:itemIconTint="?attr/colorSecondary"
         app:itemTextColor="?colorSecondary"
         app:hideOnScroll="true"

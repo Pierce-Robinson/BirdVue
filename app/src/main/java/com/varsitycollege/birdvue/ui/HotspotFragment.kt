@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -114,7 +115,12 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                     location?.let {
                         userLocation = LatLng(it.latitude, it.longitude)
                         //Get hotspot data after user's location is set
-                        getHotspotData()
+                        //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+                        //stops the app crashing before activity is ready
+                        val activity = activity
+                        if (isAdded && activity != null) {
+                            getHotspotData()
+                        }
                         googleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15f))
                     }
                 }
@@ -139,28 +145,44 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, enable my location
-                enableMyLocation()
+                //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+                //stops the app crashing before activity is ready
+                val activity = activity
+                if (isAdded && activity != null) {
+                    enableMyLocation()
+                }
+
             }
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
-
-        enableMyLocation()
+        //https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
+        //stops the app crashing before activity is ready
+        val activity = activity
+        if (isAdded && activity != null) {
+            enableMyLocation()
+        }
     }
 
     private fun getHotspotData() {
         if (model.hotspotList.value != null) {
             //Get hotspots from viewmodel
             val hotspotData = model.hotspotList.value
-            //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from viewmodel", Toast.LENGTH_LONG).show()
             Log.i("Get Hotspot", "Get Hotspot from viewmodel")
-            //TODO: Remember to set saved hotspot list to null again if user changes distance
             //Add hotspot to recycler view
             val hotspotAdapter = HotspotAdapter(hotspotData!!)
             binding.hotspotRecycler.adapter = hotspotAdapter
             binding.hotspotRecycler.layoutManager = LinearLayoutManager(requireContext())
+            //Update distance text view
+            if (_binding != null) {
+                if (model.metric.value == true) {
+                    binding.distanceTextView.text = "Showing hotspots within ${model.currentDistance.value} km"
+                } else {
+                    binding.distanceTextView.text = "Showing hotspots within ${model.currentDistance.value} miles"
+                }
+            }
             for (h in hotspotData) {
                 //Add hotspot to map
                 if (h.lat != null && h.lng != null) {
@@ -195,13 +217,19 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                 //Clear hotspot cache
                                 model.hotspotList.value = null
                                 //Convert to imperial if needed, then fetch hotspots from API
+                                model.currentDistance.value = distance
                                 if (metric != null && !metric) {
+                                    if (_binding != null) {
+                                        binding.distanceTextView.text = "Showing hotspots within $distance miles"
+                                    }
                                     distance = convertToImperial(distance)
-                                    Toast.makeText(
-                                        this@HotspotFragment.requireActivity().applicationContext,
-                                        "Converted to imperial",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    model.metric.value = false
+                                    Log.i("Distance conversion", "Converted to imperial")
+                                } else {
+                                    if (_binding != null) {
+                                        binding.distanceTextView.text = "Showing hotspots within $distance km"
+                                    }
+                                    model.metric.value = true
                                 }
                                 fetchHotspots(distance)
                             }
@@ -214,16 +242,12 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                 })
             }
         } catch (e: Exception) {
-            Toast.makeText(
-                this@HotspotFragment.requireActivity().applicationContext,
-                e.localizedMessage,
-                Toast.LENGTH_LONG
-            ).show()
+            Log.e("User distance error", "" + e.localizedMessage)
         }
     }
 
     private fun convertToImperial(distance: Double): Double {
-        val result = distance * 0.621371
+        val result = distance * 1.60934
         val df = DecimalFormat("#.##")
         return df.format(result).toDouble()
     }

@@ -28,5 +28,7 @@
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/md_theme_dark_primary</item>
+        <!-- Observation card background -->
+        <item name="android:colorPrimaryDark">#2b2b2b</item>
     </style>
 </resources>

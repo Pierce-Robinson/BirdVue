@@ -19,7 +19,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="350dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/rounded_button" />
@@ -46,18 +46,18 @@
                 android:layout_marginStart="16dp"
                 android:src="@drawable/icon" />
 
-
             <TextView
                 android:id="@+id/birdNameField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
-                android:text="@string/bird_name"
                 android:textColor="?colorSecondary"
+                android:text="@string/bird_name"
                 android:textSize="20sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/dateDisp"
             android:layout_width="wrap_content"
@@ -96,6 +96,7 @@
                 app:iconSize="23dp"
                 app:iconTint="?colorOnSecondaryContainer" />
 
+
             <Button
                 android:id="@+id/commentButton"
                 style="?attr/materialIconButtonFilledTonalStyle"
@@ -108,15 +109,15 @@
                 app:iconTint="?colorOnSecondaryContainer" />
 
             <Button
-                android:id="@+id/deleteObservation"
+                android:id="@+id/SaveObservation"
                 style="?attr/materialIconButtonFilledTonalStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorErrorContainer"
-                app:icon="@drawable/outline_delete_24"
+                android:backgroundTint="?colorTertiaryContainer"
+                app:icon="@drawable/outline_bookmark_border_24"
                 app:iconGravity="textStart"
                 app:iconSize="23dp"
-                app:iconTint="?colorError" />
+                app:iconTint="?colorOnTertiaryContainer" />
 
         </LinearLayout>
     </LinearLayout>
