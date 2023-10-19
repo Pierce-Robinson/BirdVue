@@ -64,7 +64,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_addTask"
+            android:id="@+id/fab_hotspotDirections"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_navigation_arrow"
