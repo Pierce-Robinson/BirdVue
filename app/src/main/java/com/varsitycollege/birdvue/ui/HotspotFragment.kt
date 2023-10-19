@@ -201,11 +201,12 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                 //Clear hotspot cache
                                 model.hotspotList.value = null
                                 //Convert to imperial if needed, then fetch hotspots from API
+                                model.currentDistance.value = distance
                                 if (metric != null && !metric) {
-                                    distance = convertToImperial(distance)
                                     if (_binding != null) {
                                         binding.distanceTextView.text = "Showing hotspots within $distance miles"
                                     }
+                                    distance = convertToImperial(distance)
                                     model.metric.value = false
                                     Log.i("Distance conversion", "Converted to imperial")
                                 } else {
@@ -214,7 +215,6 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                     }
                                     model.metric.value = true
                                 }
-                                model.currentDistance.value = distance
                                 fetchHotspots(distance)
                             }
                         }
@@ -231,7 +231,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
     }
 
     private fun convertToImperial(distance: Double): Double {
-        val result = distance * 0.621371
+        val result = distance * 1.60934
         val df = DecimalFormat("#.##")
         return df.format(result).toDouble()
     }
