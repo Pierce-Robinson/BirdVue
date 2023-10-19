@@ -28,6 +28,8 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_inversePrimary</item>
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/md_theme_light_primary</item>
+        <!-- Observation card background -->
+        <item name="android:colorPrimaryDark">#ffffff</item>
     </style>
 
     <style name="Theme.BirdVue" parent="Base.Theme.BirdVue" />

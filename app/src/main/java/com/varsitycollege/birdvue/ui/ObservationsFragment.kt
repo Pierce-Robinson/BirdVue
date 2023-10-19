@@ -62,6 +62,8 @@ class ObservationsFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
+                    //Clear old data from array
+                    observationArrayList.clear()
                     for (observationSnapshot in snapshot.children) {
                         val observation = observationSnapshot.getValue(Observation::class.java)
                         if (observation != null && observation.userId == user.uid) {
