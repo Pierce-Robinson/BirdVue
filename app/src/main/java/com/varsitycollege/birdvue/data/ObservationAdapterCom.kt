@@ -14,7 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.varsitycollege.birdvue.R
 
-class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapter.PostViewHolder>() {
+class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapterCom.PostViewHolder>() {
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //val postImage: ImageView = itemView.findViewById(R.id.postImage)
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePicture)
@@ -28,31 +28,33 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.observation_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.observation_item_com, parent, false)
         return PostViewHolder(view)
 
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
-        holder.date.text = post.date
+        //Bind data to views
+        //holder.postImage.setImageResource(post.imageResId)
+        //holder.profilePicture.setImageResource(post.profilePictureResId)
         holder.birdNameField.text = post.birdName
         holder.caption.text = post.details
-
-        //Set click listeners for buttons (like, comment)
+        holder.date.text = post.date
+        // Set click listeners for buttons (like, comment)
         holder.likeButton.setOnClickListener {
-            //Handle like button click
+            // Handle like button click
         }
 
         holder.commentButton.setOnClickListener {
-            //Handle comment button click
+            // Handle comment button click
         }
 
         val imageUrls = listOf(post.photo, post.location)
         val imagePagerAdapter = ImagePagerAdapter(imageUrls)
         holder.viewPager.adapter = imagePagerAdapter
 
-        //Set up dots indicator
+        // Set up dots indicator
         val dotsLayout = holder.itemView.findViewById<LinearLayout>(R.id.dotsLayout)
         setupDots(imageUrls.size, dotsLayout, holder.viewPager)
 

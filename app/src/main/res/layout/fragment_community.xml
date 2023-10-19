@@ -7,11 +7,20 @@
     android:background="?colorSecondaryContainer">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/hotspot_recycler"
+        android:id="@+id/recyclerViewCom"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="80dp"/>
+
+    <TextView
+        android:id="@+id/noItems"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="2dp"
-        android:background="@color/md_theme_light_primary"
-        tools:listitem="@layout/hotspot_item"/>
+        android:paddingTop="80dp"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:text="No Posts Have Been Made"
+        android:textAlignment="center"
+        android:textSize="42sp" />
 
 </FrameLayout>
