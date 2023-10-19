@@ -55,8 +55,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:maxHeight="50dp"
-                android:maxWidth="155dp"
-                android:text="Species observed: 69"
+                android:maxWidth="165dp"
+                android:text="Species observed: 693"
                 android:textSize="16sp"
                 android:textStyle="italic"
                 android:layout_margin="5dp"/>
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/icon_navigation_arrow"
             app:tint="?attr/colorSecondary"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="0dp"
             app:maxImageSize="40dp"
             app:borderWidth="0dp"/>
 
