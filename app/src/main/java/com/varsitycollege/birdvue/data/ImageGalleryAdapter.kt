@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.varsitycollege.birdvue.R
 
 class ImagePagerAdapter(private val imageUrls: List<String?>) : RecyclerView.Adapter<ImagePagerAdapter.ImageViewHolder>() {
@@ -23,7 +24,7 @@ class ImagePagerAdapter(private val imageUrls: List<String?>) : RecyclerView.Ada
         val imageUrl = imageUrls[position]
         Glide.with(holder.itemView.context)
             .load(imageUrl)
-            .centerCrop()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.imageView)
     }
 

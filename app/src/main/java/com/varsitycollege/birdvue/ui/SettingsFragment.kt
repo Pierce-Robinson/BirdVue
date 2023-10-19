@@ -115,40 +115,42 @@ class SettingsFragment : Fragment() {
                                     // Delete the observation with the matching user ID
                                     observationSnapshot.ref.removeValue()
                                     Log.i("Observation deleted", "${observationSnapshot.key}")
-                                    try {
-                                        // Delete user's object (Before account deletion to retain permissions
-                                        ref = database.getReference("users")
-                                        ref.child(id).removeValue().addOnSuccessListener {
-                                            // On object deletion success, delete user account and return to the login screen
-                                            auth.currentUser?.delete()?.addOnSuccessListener {
-                                                activity?.let {
-                                                    val intent = Intent(it, LoginActivity::class.java)
-                                                    it.startActivity(intent)
-                                                    it.finish() // Finish the current activity after logout
-                                                }
-                                            }
-                                        }.addOnFailureListener {
-                                            Toast.makeText(
-                                                this@SettingsFragment.requireActivity().applicationContext,
-                                                it.localizedMessage,
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                        }
-                                    } catch (e: Exception) {
-                                        Toast.makeText(
-                                            this@SettingsFragment.requireActivity().applicationContext,
-                                            "Please login, then try again.",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        logOut()
-                                    }
+
                                 }
+
                             }
 
                             override fun onCancelled(databaseError: DatabaseError) {
                                 Log.e("Error while deleting observations", "${databaseError.toException()}")
                             }
                         })
+                        try {
+                            // Delete user's object (Before account deletion to retain permissions
+                            ref = database.getReference("users")
+                            ref.child(id).removeValue().addOnSuccessListener {
+                                // On object deletion success, delete user account and return to the login screen
+                                auth.currentUser?.delete()?.addOnSuccessListener {
+                                    activity?.let {
+                                        val intent = Intent(it, LoginActivity::class.java)
+                                        it.startActivity(intent)
+                                        it.finish() // Finish the current activity after logout
+                                    }
+                                }
+                            }.addOnFailureListener {
+                                Toast.makeText(
+                                    this@SettingsFragment.requireActivity().applicationContext,
+                                    it.localizedMessage,
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                this@SettingsFragment.requireActivity().applicationContext,
+                                "Please login, then try again.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            logOut()
+                        }
                     }
                 } catch (e: Exception) {
                     Toast.makeText(
