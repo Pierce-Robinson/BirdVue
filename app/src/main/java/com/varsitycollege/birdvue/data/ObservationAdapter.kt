@@ -65,6 +65,10 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
 
         holder.deleteButton.setOnClickListener {
             //Handle delete button click
+            //https://stackoverflow.com/questions/32136973/how-to-get-a-context-in-a-recycler-view-adapter
+            //user answered
+            //https://stackoverflow.com/users/1018109/pelotasplus
+            //Accessed 18 October 2023
             AlertDialog.Builder(holder.itemView.context)
                 .setTitle("Delete Observation")
                 .setMessage("Are you sure you want to delete this observation?")

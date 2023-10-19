@@ -119,6 +119,7 @@
                 app:boxCornerRadiusTopEnd="18dp"
                 app:boxCornerRadiusTopStart="18dp"
                 app:boxStrokeColor="?colorSecondary"
+                app:boxStrokeWidth="2dp"
                 app:boxBackgroundColor="?colorSecondaryContainer">
 
                 <com.google.android.material.textfield.TextInputEditText
