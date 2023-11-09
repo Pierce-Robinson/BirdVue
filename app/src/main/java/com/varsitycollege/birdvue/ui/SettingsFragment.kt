@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
@@ -270,6 +271,14 @@ class SettingsFragment : Fragment() {
             ref.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
+                        val displayName = dataSnapshot.child("username").getValue(String::class.java)
+
+                        // Set the display name
+                        if (displayName != null && _binding != null) {
+                            binding.displayNameTextView.text = displayName
+                        }
+
+
                         val maxDistance = dataSnapshot.child("maxDistance").getValue(Int::class.java)
                         val metricUnits = dataSnapshot.child("metricUnits").getValue(Boolean::class.java)
                         if (maxDistance != null) {
