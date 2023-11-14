@@ -83,7 +83,7 @@
                 android:id="@+id/notificationsCheckbox"
                 style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:checked="false"
                 android:padding="8dp" /> <!-- Align to the right -->
@@ -116,7 +116,7 @@
                 android:id="@+id/metricUnitsCheckbox"
                 style="@style/Widget.App.Switch"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="60dp"
                 android:layout_gravity="end"
                 android:padding="8dp"
 
@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
-                android:text="Max Distance"
+                android:text="Max Distance (1 - 50)"
                 android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -211,7 +211,7 @@
             app:layout_constraintHorizontal_bias="0.093"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
-            app:layout_constraintVertical_bias="0.55"
+            app:layout_constraintVertical_bias="0.50"
             app:strokeWidth="0dp" />
 
         <com.google.android.material.button.MaterialButton

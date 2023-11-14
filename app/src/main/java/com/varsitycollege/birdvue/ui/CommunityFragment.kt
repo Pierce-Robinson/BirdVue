@@ -95,8 +95,7 @@ class CommunityFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //decide what to do lol
-                Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

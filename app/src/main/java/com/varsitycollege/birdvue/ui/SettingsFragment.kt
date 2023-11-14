@@ -75,6 +75,8 @@ class SettingsFragment : Fragment() {
                             source?.subSequence(start, end) +
                             dest?.subSequence(dend, dest.length).toString()).toInt()
 
+                    binding.updateMaxDistanceButton.isEnabled = true
+
                     return if (isInRange(input)) {
                         // Allow the input
                         null
@@ -84,12 +86,13 @@ class SettingsFragment : Fragment() {
                             null
                         } else {
                             Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
+                            binding.updateMaxDistanceButton.isEnabled = false
                             ""
                         }
                     }
                 } catch (e: NumberFormatException) {
                     // Show the error message for invalid number format
-                    Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
+                    binding.updateMaxDistanceButton.isEnabled = false
                     return ""
                 }
             }
@@ -104,6 +107,11 @@ class SettingsFragment : Fragment() {
 
 
         // simple to hide keyboard after button is clicked
+        // link: https://dev.to/rohitjakhar/hide-keyboard-in-android-using-kotlin-in-20-second-18gp
+        // author: Rohit Jakhar
+        // date accessed: 14 November 2023
+        // webiste: dev
+        // date published: 10 April 2021
         fun hideKeyboard() {
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.maxDistanceEditText.windowToken, 0)
@@ -130,9 +138,6 @@ class SettingsFragment : Fragment() {
                 ).show()
             }
         }
-
-
-
 
         //Handle delete account
         binding.deleteAccountButton.setOnClickListener {
