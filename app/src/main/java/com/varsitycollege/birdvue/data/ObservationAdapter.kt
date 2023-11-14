@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -26,7 +25,7 @@ import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.LoginActivity
 import com.varsitycollege.birdvue.R
 
-class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapter.PostViewHolder>() {
+class ObservationAdapter (private var posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapter.PostViewHolder>() {
 
     private var database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
 
@@ -48,11 +47,18 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
         return PostViewHolder(view)
 
     }
-
+    fun setObservations(newList: List<Observation>) {
+        posts = newList
+        notifyDataSetChanged()
+    }
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
         holder.date.text = post.date
         holder.birdNameField.text = post.birdName
+        holder.likeButton.text = buildString {
+            append(" ")
+            append(post.likes.toString())
+        }
         holder.caption.text = post.details
 
         //Set click listeners for buttons (like, comment, delete)
@@ -70,7 +76,7 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
             //user answered
             //https://stackoverflow.com/users/1018109/pelotasplus
             //Accessed 18 October 2023
-            MaterialAlertDialogBuilder(holder.itemView.context)
+            AlertDialog.Builder(holder.itemView.context)
                 .setTitle("Delete Observation")
                 .setMessage("Are you sure you want to delete this observation?")
                 .setPositiveButton("Yes") { _, _ ->
@@ -96,8 +102,8 @@ class ObservationAdapter (private val posts: List<Observation>) : RecyclerView.A
                         Log.e("Delete observation exception", "" + e.localizedMessage)
                     }
                 }
-                    .setNegativeButton("No", null)
-                    .show()
+                .setNegativeButton("No", null)
+                .show()
         }
 
         val imageUrls = listOf(post.photo, post.location)

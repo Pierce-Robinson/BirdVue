@@ -1,13 +1,11 @@
 package com.varsitycollege.birdvue.ui
 
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -35,7 +33,9 @@ class ObservationsFragment : Fragment() {
     private lateinit var ref: DatabaseReference
     private lateinit var observationArrayList: ArrayList<Observation>
     private lateinit var observationRecyclerView: RecyclerView
-
+    private var layoutManager: LinearLayoutManager? = null
+    private var lastFirstVisiblePosition: Int = 0
+    private lateinit var observationAdapter: ObservationAdapter
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -47,10 +47,10 @@ class ObservationsFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentObservationsBinding.inflate(inflater, container, false)
         observationRecyclerView = binding.recyclerView
-        observationArrayList = arrayListOf()
+        observationArrayList = ArrayList()
 
-
-        observationRecyclerView.layoutManager = LinearLayoutManager(context)
+        layoutManager = LinearLayoutManager(context)
+        observationRecyclerView.layoutManager = layoutManager
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
@@ -59,7 +59,6 @@ class ObservationsFragment : Fragment() {
         return binding.root
     }
 
-
     private fun getData(user: FirebaseUser) {
         database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
         ref = database.getReference("observations")
@@ -67,51 +66,46 @@ class ObservationsFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    //Clear old data from array
-                    observationArrayList.clear()
+                    val newObservations = ArrayList<Observation>()
+
                     for (observationSnapshot in snapshot.children) {
                         val observation = observationSnapshot.getValue(Observation::class.java)
                         if (observation != null && observation.userId == user.uid) {
-                            observationArrayList.add(observation)
+                            newObservations.add(observation)
                         }
-                    }
-                    observationArrayList.sortByDescending { observation ->
-                        parseDate(observation.date ?: "")
                     }
 
-                    val adapter = ObservationAdapter(observationArrayList)
-                    observationRecyclerView.adapter = adapter
-                    if (observationArrayList.isEmpty()) {
-                        if(_binding != null) {
-                            binding.noItems.visibility = View.VISIBLE
-                        }
+                    // Initialize observationAdapter if it's not initialized
+                    if (!::observationAdapter.isInitialized) {
+                        observationAdapter = ObservationAdapter(newObservations)
+                        observationRecyclerView.adapter = observationAdapter
                     } else {
-                            if(_binding != null){
-                            binding.noItems.visibility = View.GONE
-                        }
+                        // Update the existing adapter
+                        observationAdapter.setObservations(newObservations)
+                    }
+
+                    if (newObservations.isEmpty()) {
+                        binding.noItems.visibility = View.VISIBLE
+                    } else {
+                        binding.noItems.visibility = View.GONE
+                    }
+
+                    // Scroll back to the previous position
+                    val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+                    if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
+                        layoutManager?.scrollToPosition(firstVisibleItemPosition)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 // Handle error
-                Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-    private fun parseDate(dateString: String): Date {
-        val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
-        return try {
-            format.parse(dateString) ?: Date(0)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            Date(0)
-        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
 }
