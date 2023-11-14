@@ -1,9 +1,11 @@
 package com.varsitycollege.birdvue.ui
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,11 @@ import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.data.Observation
 import com.varsitycollege.birdvue.data.ObservationAdapterCom
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
+import java.util.Locale
+import java.util.Date
+import java.text.ParseException
+
+
 
 class CommunityFragment : Fragment() {
 
@@ -57,7 +64,7 @@ class CommunityFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    //Clear old data from array
+                    // we clear old dtaa
                     observationComArrayList.clear()
                     for (observationSnapshot in snapshot.children) {
                         val observation = observationSnapshot.getValue(Observation::class.java)
@@ -65,14 +72,22 @@ class CommunityFragment : Fragment() {
                             observationComArrayList.add(observation)
                         }
                     }
+
+                    // sort array by date in descending order here
+                    observationComArrayList.sortByDescending { observation ->
+                        parseDate(observation.date ?: "")
+                    }
+
+
                     val adapter = ObservationAdapterCom(observationComArrayList)
                     observationComRecyclerView.adapter = adapter
+
                     if (observationComArrayList.isEmpty()) {
-                        if(_binding != null) {
+                        if (_binding != null) {
                             binding.noItems.visibility = View.VISIBLE
                         }
                     } else {
-                        if(_binding != null){
+                        if (_binding != null) {
                             binding.noItems.visibility = View.GONE
                         }
                     }
@@ -80,10 +95,23 @@ class CommunityFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+                //decide what to do lol
+                Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
+    private fun parseDate(dateString: String): Date {
+        val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+        return try {
+            format.parse(dateString) ?: Date(0)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            Date(0)
+        }
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
