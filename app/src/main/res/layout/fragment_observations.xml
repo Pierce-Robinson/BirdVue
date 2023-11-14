@@ -13,12 +13,11 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/searchview_border"
-            android:padding="4dp"
+            app:iconifiedByDefault="false"
+            app:queryHint="Search"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_marginEnd="16dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewCom"
