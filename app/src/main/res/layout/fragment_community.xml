@@ -18,17 +18,12 @@
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="16dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCom"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
     <androidx.cardview.widget.CardView
         android:id="@+id/noItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
         android:visibility="gone"
@@ -47,5 +42,11 @@
             android:textSize="36sp"/>
 
     </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
 </LinearLayout>
