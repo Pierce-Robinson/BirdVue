@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -23,6 +24,7 @@ import com.google.firebase.database.ValueEventListener
 
 import android.text.InputFilter
 import android.text.Spanned
+import android.view.inputmethod.InputMethodManager
 
 
 class SettingsFragment : Fragment() {
@@ -58,7 +60,7 @@ class SettingsFragment : Fragment() {
         // author: Pratik Sharma
         // date accessed: 13 November 2023
 
-        // restricts the input based on the specified range of 1 - 50
+
         class RangeInputFilter(private val minValue: Int, private val maxValue: Int) : InputFilter {
             override fun filter(
                 source: CharSequence?,
@@ -72,14 +74,24 @@ class SettingsFragment : Fragment() {
                     val input = (dest?.subSequence(0, dstart).toString() +
                             source?.subSequence(start, end) +
                             dest?.subSequence(dend, dest.length).toString()).toInt()
-                    if (isInRange(input)) {
-                        return null
+
+                    return if (isInRange(input)) {
+                        // Allow the input
+                        null
+                    } else {
+                        // Show the error message only for new input (not backspacing)
+                        if (source?.isEmpty() == true && dstart == 0 && dend == dest?.length) {
+                            null
+                        } else {
+                            Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
+                            ""
+                        }
                     }
                 } catch (e: NumberFormatException) {
-                    Toast.makeText(context, "Please enter a valid number", Toast.LENGTH_SHORT).show()
+                    // Show the error message for invalid number format
+                    Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
                     return ""
                 }
-                return ""
             }
 
             // link: https://www.techiedelight.com/find-minimum-maximum-value-list-kotlin/
@@ -90,6 +102,14 @@ class SettingsFragment : Fragment() {
             }
         }
 
+
+        // simple to hide keyboard after button is clicked
+        fun hideKeyboard() {
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.maxDistanceEditText.windowToken, 0)
+        }
+
+
         // we have to apply an InputFilter to the EditText
         binding.maxDistanceEditText.filters = arrayOf(RangeInputFilter(1, 50))
 
@@ -99,6 +119,9 @@ class SettingsFragment : Fragment() {
             if (maxDistanceText.isNotBlank()) {
                 val maxDistanceValue = maxDistanceText.toInt()
                 updateMaxDistance(maxDistanceValue)
+
+                // Hide the keyboard
+                hideKeyboard()
             } else {
                 Toast.makeText(
                     this@SettingsFragment.requireActivity().applicationContext,
@@ -107,6 +130,8 @@ class SettingsFragment : Fragment() {
                 ).show()
             }
         }
+
+
 
 
         //Handle delete account
