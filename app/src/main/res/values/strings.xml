@@ -14,6 +14,9 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="or">or</string>
     <string name="no_account">Don\'t have an account? </string>
+    <!-- Settings page -->
+    <string name="profile_picture">Profile Picture</string>
+    <string name="display_name">Display Name</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="mapbox_access_token">pk.eyJ1IjoicGlybzQ3IiwiYSI6ImNsbmcyYnZyZTB5NnEycXA0ejMyMXljZGYifQ.5SnraH-d438N2ltYuC4VPQ</string>
 

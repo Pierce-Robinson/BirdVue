@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +16,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.varsitycollege.birdvue.LoginActivity
 import com.varsitycollege.birdvue.databinding.FragmentSettingsBinding
-import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -270,6 +268,14 @@ class SettingsFragment : Fragment() {
             ref.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
+                        val displayName = dataSnapshot.child("username").getValue(String::class.java)
+
+                        // Set the display name
+                        if (displayName != null && _binding != null) {
+                            binding.displayNameTextView.text = displayName
+                        }
+
+
                         val maxDistance = dataSnapshot.child("maxDistance").getValue(Int::class.java)
                         val metricUnits = dataSnapshot.child("metricUnits").getValue(Boolean::class.java)
                         if (maxDistance != null) {

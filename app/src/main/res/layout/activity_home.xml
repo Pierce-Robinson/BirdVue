@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/frame_container" />
+        android:id="@+id/frame_container"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
@@ -22,7 +22,7 @@
         app:itemIconTint="?attr/colorSecondary"
         app:itemTextColor="?colorSecondary"
         app:hideOnScroll="true"
-        />
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
@@ -32,6 +32,7 @@
         app:tint="?attr/colorOnSecondary"
         android:src="@drawable/icon_add"
         app:layout_anchor="@id/bottomNavView"
-        app:layout_anchorGravity="center"/>
+        app:layout_anchorGravity="center"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
