@@ -12,9 +12,24 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.varsitycollege.birdvue.R
 
-class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapterCom.PostViewHolder>() {
+class DelayedClickListener(private val delayMillis: Long, private val onClickListener: View.OnClickListener) : View.OnClickListener {
+
+    private var lastClickTime: Long = 0
+
+    override fun onClick(view: View) {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastClickTime >= delayMillis) {
+            // If enough time has passed, allow the click
+            lastClickTime = currentTime
+            onClickListener.onClick(view)
+        }
+    }
+}
+class ObservationAdapterCom (private var posts: List<Observation>) : RecyclerView.Adapter<ObservationAdapterCom.PostViewHolder>() {
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         //val postImage: ImageView = itemView.findViewById(R.id.postImage)
         val profilePicture: ImageView = itemView.findViewById(R.id.profilePicture)
@@ -32,7 +47,10 @@ class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerVie
         return PostViewHolder(view)
 
     }
-
+    fun setObservations(newList: List<Observation>) {
+        posts = newList
+        notifyDataSetChanged()
+    }
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = posts[position]
         //Bind data to views
@@ -40,11 +58,37 @@ class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerVie
         //holder.profilePicture.setImageResource(post.profilePictureResId)
         holder.birdNameField.text = post.birdName
         holder.caption.text = post.details
+        holder.likeButton.text = buildString {
+            append(" ")
+            append(post.likes.toString())
+        }
         holder.date.text = post.date
         // Set click listeners for buttons (like, comment)
-        holder.likeButton.setOnClickListener {
-            // Handle like button click
-        }
+        holder.likeButton.setOnClickListener(DelayedClickListener(1000, View.OnClickListener {
+            if (!post.liked){
+            // If the user hasn't liked this observation, increment the likes count locally
+            post.likes = post.likes?.plus(1)
+
+            // Notify the adapter that the data at this position has changed
+            notifyItemChanged(position)
+
+            // Now, update the likes count in Firebase
+            post.id?.let { it1 ->
+                incrementLikes(it1)
+                post.liked=true
+            }
+            }else{
+                post.likes = post.likes?.plus(-1)
+
+                notifyItemChanged(position)
+
+                post.id?.let { it1 ->
+                    decrementLikes(it1)
+                    post.liked=false
+                }
+            }
+        }))
+
 
         holder.commentButton.setOnClickListener {
             // Handle comment button click
@@ -58,6 +102,34 @@ class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerVie
         val dotsLayout = holder.itemView.findViewById<LinearLayout>(R.id.dotsLayout)
         setupDots(imageUrls.size, dotsLayout, holder.viewPager)
 
+    }
+    private fun incrementLikes(observationId: String) {
+        val database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+        val observationRef = database.getReference("observations").child(observationId)
+        observationRef.child("likes").setValue(ServerValue.increment(1))
+            observationRef.child("liked").setValue(true)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                } else {
+                    // Handle the error
+
+                }
+            }
+    }
+    private fun decrementLikes(observationId: String) {
+        val database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+        val observationRef = database.getReference("observations").child(observationId)
+        observationRef.child("likes").setValue(ServerValue.increment(-1))
+        observationRef.child("liked").setValue(false)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+
+                } else {
+                    // Handle the error
+
+                }
+            }
     }
     private fun setupDots(count: Int, parent: LinearLayout, viewPager: ViewPager2) {
         parent.removeAllViews()

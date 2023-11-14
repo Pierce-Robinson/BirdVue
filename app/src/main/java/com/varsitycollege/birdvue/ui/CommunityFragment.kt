@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.data.Observation
+import com.varsitycollege.birdvue.data.ObservationAdapter
 import com.varsitycollege.birdvue.data.ObservationAdapterCom
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
 import java.util.Locale
@@ -33,7 +34,9 @@ class CommunityFragment : Fragment() {
     private lateinit var ref: DatabaseReference
     private lateinit var observationComArrayList: ArrayList<Observation>
     private lateinit var observationComRecyclerView: RecyclerView
-
+    private var layoutManager: LinearLayoutManager? = null
+    private var lastFirstVisiblePosition: Int = 0
+    private lateinit var observationAdapterCom: ObservationAdapterCom
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -64,7 +67,7 @@ class CommunityFragment : Fragment() {
         ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    // we clear old dtaa
+                    // Clear old data
                     observationComArrayList.clear()
                     for (observationSnapshot in snapshot.children) {
                         val observation = observationSnapshot.getValue(Observation::class.java)
@@ -73,14 +76,26 @@ class CommunityFragment : Fragment() {
                         }
                     }
 
-                    // sort array by date in descending order here
+                    // Sort array by date in descending order
                     observationComArrayList.sortByDescending { observation ->
                         parseDate(observation.date ?: "")
                     }
 
+                    // Initialize or update the adapter
+                    if (!::observationAdapterCom.isInitialized) {
+                        observationAdapterCom = ObservationAdapterCom(observationComArrayList)
+                        observationComRecyclerView.adapter = observationAdapterCom
+                    } else {
+                        val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+                        val offset = layoutManager?.findFirstVisibleItemPosition()?.let {
+                            layoutManager?.findViewByPosition(it)?.top
+                        } ?: 0
 
-                    val adapter = ObservationAdapterCom(observationComArrayList)
-                    observationComRecyclerView.adapter = adapter
+                        observationAdapterCom.setObservations(observationComArrayList)
+
+                        // Scroll back to the previous position
+                        layoutManager?.scrollToPositionWithOffset(firstVisibleItemPosition, offset)
+                    }
 
                     if (observationComArrayList.isEmpty()) {
                         if (_binding != null) {
@@ -95,11 +110,12 @@ class CommunityFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                //decide what to do lol
+                // Handle error
                 Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
 
     private fun parseDate(dateString: String): Date {
         val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())

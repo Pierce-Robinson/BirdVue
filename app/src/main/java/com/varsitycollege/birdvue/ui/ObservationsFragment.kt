@@ -83,13 +83,13 @@ class ObservationsFragment : Fragment() {
                         // Update the existing adapter
                         observationAdapter.setObservations(newObservations)
                     }
-
-                    if (newObservations.isEmpty()) {
-                        binding.noItems.visibility = View.VISIBLE
-                    } else {
-                        binding.noItems.visibility = View.GONE
+                    if (_binding != null) {
+                        if (newObservations.isEmpty()) {
+                            binding.noItems.visibility = View.VISIBLE
+                        } else {
+                            binding.noItems.visibility = View.GONE
+                        }
                     }
-
                     // Scroll back to the previous position
                     val firstVisibleItemPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
                     if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {

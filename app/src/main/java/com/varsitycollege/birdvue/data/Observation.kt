@@ -9,8 +9,9 @@ data class Observation(
     val lat: Double ?= null,
     val lng: Double ?= null,
     val location: String ?= null,
-    val likes: Int ?= null,
+    var likes: Int ?= null,
     val comments: List<Comment> ?= null,
-    val userId: String ?= null
+    val userId: String ?= null,
+    var liked: Boolean = false
 )
 
