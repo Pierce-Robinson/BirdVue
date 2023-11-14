@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="?android:colorPrimaryDark"/> <!-- Background color of SearchView -->
+    <stroke android:width="2dp" android:color="?colorSecondary"/> <!-- Border color and width -->
+    <corners android:radius="20dp"/> <!-- Corner radius -->
+</shape>
