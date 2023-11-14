@@ -1,7 +1,7 @@
 package com.varsitycollege.birdvue.ui
 
-import android.app.Activity
 import android.content.pm.PackageManager
+import kotlin.math.*
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -41,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.varsitycollege.birdvue.data.HomeViewModel
 import com.varsitycollege.birdvue.data.HotspotAdapter
+import com.varsitycollege.birdvue.data.Observation
 import java.text.DecimalFormat
 
 class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener  {
@@ -191,9 +192,14 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                         MarkerOptions()
                             .position(pos)
                             .title(h.locName)
+                            .snippet("Observed species: " + h.numSpeciesAllTime)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     )
                 }
+            }
+            //Populate map with user observations
+            if (model.currentDistance.value != null) {
+                fetchObservations(model.currentDistance.value!!)
             }
         } else {
             getUserDistance()
@@ -232,6 +238,7 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                     model.metric.value = true
                                 }
                                 fetchHotspots(distance)
+                                fetchObservations(distance)
                             }
                         }
                     }
@@ -252,6 +259,59 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
         return df.format(result).toDouble()
     }
 
+    fun calculateDistance(
+        lat1: Double, lon1: Double,
+        lat2: Double, lon2: Double
+    ): Double {
+        val R = 6371 // Earth radius in kilometers
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return R * c // Distance in kilometers
+    }
+
+    private fun fetchObservations(distance: Double) {
+        database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
+        ref = database.getReference("observations")
+        try {
+            ref.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (observationSnapshot in snapshot.children) {
+                            val observation = observationSnapshot.getValue(Observation::class.java)
+                            if (observation?.lat != null && observation.lng != null) {
+                                if (calculateDistance(userLocation.latitude, userLocation.longitude, observation.lat, observation.lng) <= distance) {
+                                    //Log.i("Found Observation", observation.birdName + ": " + observation.details)
+                                    val pos = LatLng(observation.lat, observation.lng)
+                                    googleMap?.addMarker(
+                                        MarkerOptions()
+                                            .position(pos)
+                                            .title(observation.birdName)
+                                            .snippet("Spotted: " + observation.date)
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Database error", error.details)
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("Error fetching observations", "" + e.localizedMessage)
+        }
+    }
+
     private fun fetchHotspots(distance: Double) {
         //Toast.makeText(this@HotspotFragment.requireActivity().applicationContext, "Getting data from API", Toast.LENGTH_LONG).show()
         //Call eBird api to fetch hotspot data
@@ -261,7 +321,6 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
             .build()
 
         val api = retrofit.create(EBirdAPI::class.java)
-        //TODO: Change distance to user's selected setting
         api.getHotspots(userLocation.latitude, userLocation.longitude, "json", distance, BuildConfig.EBIRD_API_KEY).enqueue(object : Callback<List<Hotspot>> {
             override fun onResponse(call: Call<List<Hotspot>>, response: Response<List<Hotspot>>) {
                 try {
@@ -281,13 +340,14 @@ class HotspotFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMyLocationBu
                                     MarkerOptions()
                                         .position(pos)
                                         .title(h.locName)
+                                        .snippet("Observed species: " + h.numSpeciesAllTime)
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                 )
                             }
                         }
                     }
                 } catch (e: Exception) {
-                    //TODO: handle binding exception
+                    e.message?.let { Log.e("Hotspot Error", it) }
                 }
             }
 

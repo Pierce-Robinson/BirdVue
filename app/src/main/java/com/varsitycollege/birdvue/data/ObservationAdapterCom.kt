@@ -25,6 +25,7 @@ class ObservationAdapterCom (private val posts: List<Observation>) : RecyclerVie
         val commentButton: Button = itemView.findViewById(R.id.commentButton)
         val viewPager: ViewPager2 = itemView.findViewById(R.id.viewPager)
 
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
