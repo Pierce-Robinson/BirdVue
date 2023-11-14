@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +34,9 @@ class CommunityFragment : Fragment() {
     private lateinit var ref: DatabaseReference
     private lateinit var observationComArrayList: ArrayList<Observation>
     private lateinit var observationComRecyclerView: RecyclerView
-
+    //search
+    private lateinit var searchView: SearchView
+    private lateinit var adapter: ObservationAdapterCom
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -54,9 +57,43 @@ class CommunityFragment : Fragment() {
         if (currentUser != null) {
             getData(currentUser)
         }
+        // Set up the SearchView
+        setupSearchView()
+
         return binding.root
     }
+    private fun setupSearchView() {
+        searchView = binding.searchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterObservations(newText ?: "")
+                return true
+            }
+        })
+    }
+
+    //Search for post by date or by birdname
+    private fun filterObservations(query: String) {
+        val filteredList = if (query.isEmpty()) {
+            observationComArrayList
+        } else {
+            observationComArrayList.filter { observation ->
+                observation.date!!.contains(query, ignoreCase = true) ||
+                        observation.birdName!!.contains(query, ignoreCase = true)
+            }
+        }
+        updateRecyclerView(filteredList)
+    }
+
+    //update list based on filter
+    private fun updateRecyclerView(list: List<Observation>) {
+        adapter = ObservationAdapterCom(list)
+        observationComRecyclerView.adapter = adapter
+    }
     private fun getData(user: FirebaseUser) {
         database = FirebaseDatabase.getInstance("https://birdvue-9288a-default-rtdb.europe-west1.firebasedatabase.app/")
         ref = database.getReference("observations")
