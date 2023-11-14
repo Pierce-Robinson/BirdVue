@@ -15,6 +15,10 @@ class HomeViewModel : ViewModel() {
         MutableLiveData<List<Hotspot>>()
     }
 
+    val observationList: MutableLiveData<List<Observation>> by lazy {
+        MutableLiveData<List<Observation>>()
+    }
+
     val currentDistance: MutableLiveData<Double> by lazy {
         MutableLiveData<Double>()
     }

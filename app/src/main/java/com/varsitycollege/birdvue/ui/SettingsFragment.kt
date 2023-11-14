@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
@@ -19,6 +21,11 @@ import com.varsitycollege.birdvue.databinding.FragmentSettingsBinding
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+
+import android.text.InputFilter
+import android.text.Spanned
+import android.view.inputmethod.InputMethodManager
+
 
 class SettingsFragment : Fragment() {
 
@@ -49,18 +56,86 @@ class SettingsFragment : Fragment() {
             }
         }
 
+        // link: https://stackoverflow.com/questions/14212518/is-there-a-way-to-define-a-min-and-max-value-for-edittext-in-android
+        // author: Pratik Sharma
+        // date accessed: 13 November 2023
+
+
+        class RangeInputFilter(private val minValue: Int, private val maxValue: Int) : InputFilter {
+            override fun filter(
+                source: CharSequence?,
+                start: Int,
+                end: Int,
+                dest: Spanned?,
+                dstart: Int,
+                dend: Int
+            ): CharSequence? {
+                try {
+                    val input = (dest?.subSequence(0, dstart).toString() +
+                            source?.subSequence(start, end) +
+                            dest?.subSequence(dend, dest.length).toString()).toInt()
+
+                    binding.updateMaxDistanceButton.isEnabled = true
+
+                    return if (isInRange(input)) {
+                        // Allow the input
+                        null
+                    } else {
+                        // Show the error message only for new input (not backspacing)
+                        if (source?.isEmpty() == true && dstart == 0 && dend == dest?.length) {
+                            null
+                        } else {
+                            Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
+                            binding.updateMaxDistanceButton.isEnabled = false
+                            ""
+                        }
+                    }
+                } catch (e: NumberFormatException) {
+                    // Show the error message for invalid number format
+                    binding.updateMaxDistanceButton.isEnabled = false
+                    return ""
+                }
+            }
+
+            // link: https://www.techiedelight.com/find-minimum-maximum-value-list-kotlin/
+            // Auhtor: Vivek Srivastava
+            // Date accessed: 13 November 2023
+            private fun isInRange(value: Int): Boolean {
+                return value in minValue..maxValue
+            }
+        }
+
+
+        // simple to hide keyboard after button is clicked
+        // link: https://dev.to/rohitjakhar/hide-keyboard-in-android-using-kotlin-in-20-second-18gp
+        // author: Rohit Jakhar
+        // date accessed: 14 November 2023
+        // webiste: dev
+        // date published: 10 April 2021
+        fun hideKeyboard() {
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(binding.maxDistanceEditText.windowToken, 0)
+        }
+
+
+        // we have to apply an InputFilter to the EditText
+        binding.maxDistanceEditText.filters = arrayOf(RangeInputFilter(1, 50))
+
         // Handle the update max distance
         binding.updateMaxDistanceButton.setOnClickListener {
             val maxDistanceText = binding.maxDistanceEditText.text.toString()
-            try {
-                if (maxDistanceText.isNotBlank() && maxDistanceText.toInt() > 0 && maxDistanceText.toInt() <= 50) {
-                    val maxDistanceValue = maxDistanceText.toInt()
-                    updateMaxDistance(maxDistanceValue)
-                } else {
-                    Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value (1 - 50)", Toast.LENGTH_LONG).show()
-                }
-            } catch (e: Exception) {
-                Toast.makeText(this@SettingsFragment.requireActivity().applicationContext, "Please enter a valid value (1 - 50)", Toast.LENGTH_LONG).show()
+            if (maxDistanceText.isNotBlank()) {
+                val maxDistanceValue = maxDistanceText.toInt()
+                updateMaxDistance(maxDistanceValue)
+
+                // Hide the keyboard
+                hideKeyboard()
+            } else {
+                Toast.makeText(
+                    this@SettingsFragment.requireActivity().applicationContext,
+                    "Please enter a valid value (1 - 50)",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -98,7 +173,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun deleteObservations(id: String?) {
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete Observations")
             .setMessage("Do you also want to delete all your observations?")
             .setPositiveButton("Yes") { _, _ ->
@@ -195,7 +270,7 @@ class SettingsFragment : Fragment() {
 
     private fun deleteAccount() {
         // this will show a confirmation popup for deletion
-        AlertDialog.Builder(requireContext())
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete Account")
             .setMessage("Are you sure you want to delete your account?")
             .setPositiveButton("Yes") { _, _ ->

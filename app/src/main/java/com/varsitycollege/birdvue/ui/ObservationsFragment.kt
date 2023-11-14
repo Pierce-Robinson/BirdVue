@@ -1,5 +1,6 @@
 package com.varsitycollege.birdvue.ui
 
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
 import androidx.appcompat.widget.SearchView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -23,6 +25,9 @@ import com.varsitycollege.birdvue.data.ObservationAdapter
 import com.varsitycollege.birdvue.data.ObservationAdapterCom
 import com.varsitycollege.birdvue.databinding.FragmentCommunityBinding
 import com.varsitycollege.birdvue.databinding.FragmentObservationsBinding
+import java.text.ParseException
+import java.util.Date
+import java.util.Locale
 
 class ObservationsFragment : Fragment() {
 
@@ -110,6 +115,10 @@ class ObservationsFragment : Fragment() {
                             observationArrayList.add(observation)
                         }
                     }
+                    observationArrayList.sortByDescending { observation ->
+                        parseDate(observation.date ?: "")
+                    }
+
                     val adapter = ObservationAdapter(observationArrayList)
                     observationRecyclerView.adapter = adapter
                     if (observationArrayList.isEmpty()) {
@@ -126,8 +135,18 @@ class ObservationsFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {
                 // Handle error
+                Toast.makeText(context, "There was an error during data retrieval: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+    private fun parseDate(dateString: String): Date {
+        val format = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+        return try {
+            format.parse(dateString) ?: Date(0)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            Date(0)
+        }
     }
 
     override fun onDestroyView() {
