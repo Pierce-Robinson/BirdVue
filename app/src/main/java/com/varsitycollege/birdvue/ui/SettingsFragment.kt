@@ -86,7 +86,10 @@ class SettingsFragment : Fragment() {
                             null
                         } else {
                             Toast.makeText(context, "Please enter a valid value (1 - 50)", Toast.LENGTH_SHORT).show()
-                            binding.updateMaxDistanceButton.isEnabled = false
+                            if (binding.maxDistanceEditText.text.toString() == "") {
+                                binding.updateMaxDistanceButton.isEnabled = false
+                            }
+                            //binding.updateMaxDistanceButton.isEnabled = false
                             ""
                         }
                     }
